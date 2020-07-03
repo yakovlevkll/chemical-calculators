@@ -51,21 +51,36 @@ class Reaction:
             self.atoms.update(set(subs.composition.keys()))
 
     def solve(self):
-        coeffs = np.array([[1, 0, -2, 0, 0, 0], [1, 0, 0, 0, -1, 0],
-                           [3, 4, -12, 0, -2, -1], [0, 2, 0, 0, 0, -2], [0, 1, -3, -1, 0, 0]])
+        n = 0
+        t = 0
+        coeff_list = []
+        matrix = []
 
-        combs = product(range(1, 12), repeat=6)
+        while i != len(self.atoms):
+            while n != len(self.reactants):
+                if self.atoms[t] in self.reactants[n]:
+                    coeff_list += self.reactants[n][t+1]
+                n += 1
+            matrix += coeff_list
+            t += 1
+            n = 0
 
-        for i in combs:
-            solution = np.array(i)
-            res = coeffs.dot(solution)
+        coeffs = np.array(matrix)
+
+        combs = product(range(1, 12), repeat=(len(self.reactants)+len(self.products))
+
+        for i in combs:  # doesn't execute 'for' function?
+            solution=np.array(i)
+            res=coeffs.dot(solution)
 
             if np.count_nonzero(res, axis=None) == 0:
                 print(res, solution)
                 break
 
+
+
     def __repr__(self):
-        solution = ''
+        solution=''
 
         solution += ' + '.join([item.pretty_formula for item in self.reactants])
 
@@ -79,5 +94,5 @@ class Reaction:
 
 
 if __name__ == "__main__":
-    test = Reaction('H2 + O2 = H2O')
+    test=Reaction('H2 + O2 = H2O')
     print(test)
