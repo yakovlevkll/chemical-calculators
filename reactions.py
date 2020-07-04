@@ -51,36 +51,39 @@ class Reaction:
             self.atoms.update(set(subs.composition.keys()))
 
     def solve(self):
-        n = 0
-        t = 0
-        coeff_list = []
         matrix = []
 
-        while i != len(self.atoms):
-            while n != len(self.reactants):
-                if self.atoms[t] in self.reactants[n]:
-                    coeff_list += self.reactants[n][t+1]
-                n += 1
-            matrix += coeff_list
-            t += 1
-            n = 0
+        for atom in self.atoms:
+            coeffs = []
+
+            for item in self.reactants:
+                if atom in item.composition:
+                    coeffs.append(item.composition[atom])
+                else:
+                    coeffs.append(0)
+
+            for item in self.products:
+                if atom in item.composition:
+                    coeffs.append(-item.composition[atom])
+                else:
+                    coeffs.append(0)
+
+            matrix.append(coeffs)
 
         coeffs = np.array(matrix)
 
-        combs = product(range(1, 12), repeat=(len(self.reactants)+len(self.products))
+        combs = product(range(1, 12), repeat=len(self.atoms) + 1)
 
-        for i in combs:  # doesn't execute 'for' function?
-            solution=np.array(i)
-            res=coeffs.dot(solution)
+        for i in combs:
+            solution = np.array(i)
+            res = coeffs.dot(solution)
 
             if np.count_nonzero(res, axis=None) == 0:
-                print(res, solution)
+                self.solution = solution
                 break
 
-
-
     def __repr__(self):
-        solution=''
+        solution = ''
 
         solution += ' + '.join([item.pretty_formula for item in self.reactants])
 
@@ -88,11 +91,9 @@ class Reaction:
 
         solution += ' + '.join([item.pretty_formula for item in self.products])
 
-        return f'''Reaction given: {self.plain_reaction}
-        Solution: {solution}
-        '''
+        return f'{self.solution} ({self.plain_reaction})'
 
 
 if __name__ == "__main__":
-    test=Reaction('H2 + O2 = H2O')
+    test = Reaction('H2 + O2 = H2O')
     print(test)
