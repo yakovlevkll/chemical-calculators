@@ -1,6 +1,6 @@
 from string import ascii_letters
 
-from substance import Substance
+from substance.substance import Substance
 
 from itertools import product
 import numpy as np
@@ -79,7 +79,7 @@ class Reaction:
             res = coeffs.dot(solution)
 
             if np.count_nonzero(res, axis=None) == 0:
-                self.solution = solution
+                self.solution = list(solution)
                 break
 
     def __repr__(self):
