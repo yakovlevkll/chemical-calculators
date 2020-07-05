@@ -13,7 +13,7 @@ class TestSubstanceClass(TestCase):
     def test_two_chars_symbol(self):
         sub = Substance('He')
         self.assertEqual(sub.composition, {'He': 1})
-        self.assertEqual(sub.mass, 4.0026)
+        self.assertAlmostEqual(sub.mass, 4.0026, 3)
 
     def test_one_char_symbol_with_index(self):
         sub = Substance('O3')
