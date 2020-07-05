@@ -83,15 +83,35 @@ class Reaction:
                 break
 
     def __repr__(self):
-        solution = ''
+        len_reactants = len(self.reactants)
 
-        solution += ' + '.join([item.pretty_formula for item in self.reactants])
+        reactant_coeffs = self.solution[:len_reactants]
+        product_coeffs = self.solution[len_reactants:]
 
-        solution += ' -> '
+        equation = [zip(reactant_coeffs, self.reactants),
+                    zip(product_coeffs, self.products)]
 
-        solution += ' + '.join([item.pretty_formula for item in self.products])
+        # equation = [
+        #     [(2, Substance('H2')), (1, Substance('O2'))],
+        #     [(2, Substance('H2O'))]
+        #     ]
 
-        return f'{self.solution} ({self.plain_reaction})'
+        solution = []
+
+        for half in equation:
+            temp = []
+            for coeff, subs in half:
+                if coeff == 1:
+                    coeff = ''
+                temp.append(f'{coeff}{subs.pretty_formula}')
+            # temp = ['2H2', 'O2']
+            solution.append(' + '.join(temp))
+            # solution = ['2H2 + O2']
+
+        # solution = ' -> '.join(solution)
+        # solution = ['2H2 + O2', '2H2O']
+
+        return f'{solution[0]} -> {solution[1]} ({self.plain_reaction})'
 
 
 if __name__ == "__main__":
