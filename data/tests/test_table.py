@@ -1,14 +1,13 @@
-from unittest import TestCase
+import pytest
 
 from data.table import TABLE
 
 
-class TestPeriodicTable(TestCase):
+def test_out_of_range():
+    with pytest.raises(ValueError):
+        TABLE[0]
 
-    def test_out_of_range(self):
-        with self.assertRaises(ValueError):
-            TABLE[0]
 
-    def test_unknown_atom(self):
-        with self.assertRaises(ValueError):
-            TABLE['Ab']
+def test_unknown_atom():
+    with pytest.raises(ValueError):
+        TABLE['Ab']
