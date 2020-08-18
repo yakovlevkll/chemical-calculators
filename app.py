@@ -2,7 +2,6 @@
 Main entry point
 '''
 
-
 from ui.tkinter.main import start_gui
     
 

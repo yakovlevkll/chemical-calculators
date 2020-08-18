@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.font as tkFont
 
 
 
@@ -14,5 +15,4 @@ def fontSettings(fontsize=12):
     fixed_font.configure(size=fontsize)
 
 
-data = tk.StringVar
 
