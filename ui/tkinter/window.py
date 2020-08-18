@@ -8,17 +8,6 @@ from substance.substance import Substance
 from reactions.reactions import Reaction
 
 
-class ReactionsWidget(tk.LabelFrame):
-
-    def __init__(self, parent, *args, **kwargs):
-        tk.LabelFrame.__init__(self, parent, *args, **kwargs)
-
-        self.parent = parent
-
-        button_close = tk.Button(parent, text="Test")
-        button_close.grid()
-
-
 class MainApplication(tk.Frame):
 
     def __init__(self, parent, *args, **kwargs):
