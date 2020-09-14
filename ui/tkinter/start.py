@@ -60,7 +60,8 @@ check = tk.Checkbutton(
 )
 check.grid(row=3, column=3, ipady=2, **padding)
 
-button_submit = tk.Button(frame, text="Submit", command=calc, font=("Helvetica", "30"))
+button_submit = tk.Button(frame, text="Submit",
+                          command=calc, font=("Helvetica", "30"))
 button_submit.grid(row=1, columnspan=2, ipady=10)
 
 button_submit2 = tk.Button(
@@ -107,4 +108,3 @@ label2.grid(row=4, column=3, ipady=3, padx=15, pady=18)
 
 
 root.mainloop()
-

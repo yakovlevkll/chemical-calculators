@@ -111,7 +111,8 @@ class Reaction:
         # solution = ' -> '.join(solution)
         # solution = ['2H2 + O2', '2H2O']
 
-        return f'{solution[0]} -> {solution[1]} ({self.plain_reaction})'
+        return f'''{solution[0]} -> {solution[1]} 
+        ({self.plain_reaction})'''
 
 
 if __name__ == "__main__":
