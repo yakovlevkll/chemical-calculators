@@ -1,5 +1,5 @@
 import tkinter as tk
-from .Var import Variable
+from .Var import var
 from reactions.reactions import Reaction
 
 
@@ -11,10 +11,9 @@ class ReactionModule(tk.Frame):
         self.reaction_txt = tk.StringVar()
         # for testing/ remove later
         self.fixture()
-        var = Variable(parent)
 
         frame = tk.LabelFrame(parent, text="Enter Reaction")
-        frame.grid(row=2, column=3, columnspan=2, ipady=10)
+        frame.grid(row=2, column=3, columnspan=2, padx=var.padx, pady=var.pady)
 
         self.label = tk.Label(frame, text="")
         self.label.grid(row=1, column=var.widgets_col, ipady=10)
@@ -51,6 +50,3 @@ class ReactionModule(tk.Frame):
 
     def select_entry(self, _event=None):
         entry.focus
-
-    '''def test_func(self):
-        print(1)'''

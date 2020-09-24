@@ -1,5 +1,5 @@
 import tkinter as tk
-from .Var import Variable
+from .Var import var
 from substance.substance import Substance
 
 
@@ -12,11 +12,10 @@ class SubstanceModule:
 
         # for testing/ remove later
         self.fixture()
-        var = Variable(parent)
 
         frame = tk.LabelFrame(parent, text="Enter Substance")
         frame.grid(row=var.subs_row, column=var.subs_col,
-                   columnspan=2, pady=var.padd_y, padx=var.padd_x)
+                   columnspan=2, pady=var.pady, padx=var.padx)
 
         self.label = tk.Label(frame, text="")
         self.label.grid(row=1, column=var.widgets_col, ipady=10)
@@ -43,7 +42,6 @@ class SubstanceModule:
     def submit_func_pretty(self, _event=None):
         self.pretty()
         self.clear_entry_subs()
-        print(1)  # remove
 
     def fixture(self):
         self.substance_txt.set('CO2')
