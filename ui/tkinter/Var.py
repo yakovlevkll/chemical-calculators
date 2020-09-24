@@ -13,8 +13,13 @@ class Variable:
         self.entry_row = self.label_row + 1,
         self.submit_row = self.label_row + 2
 
-        self.padd_x = 100,
+        self.padd_x = 100
         self.padd_y = 100
+
+        # For frames
+        self.subs_frame_row = 1
+        self.react_frame_row = self.subs_frame_row + 1
+        self.frame col = 2
 
 
 data = tk.StringVar

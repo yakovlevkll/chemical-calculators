@@ -3,8 +3,6 @@ import tkinter.font as tkFont
 from .Var import Variable
 from .ReactionModule import ReactionModule
 from .SubstanceModule import SubstanceModule
-from .Functions import Functions
-from .Outside_layer import OuterLayer
 
 
 from substance.substance import Substance
@@ -16,18 +14,23 @@ class MainApplication(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-        # self.parent.grid(padx=100)
-        self.substance_txt = tk.StringVar()
-        self.reaction_txt = tk.StringVar()
-        # self.val.set("H2O")
+
+        substance_module = SubstanceModule(parent)
+        substance_module.frame.grid(
+            row=var.subs_frame_row, column=var.frame_col, ipady=10)
 
         reaction_module = ReactionModule(parent)
         reaction_module.frame.grid(
-            row=2, column=1, columnspan=2, pady=100, padx=100)
+            row=var.react_frame_row, column=var.frame_col, columnspan=2, pady=100, padx=100)
 
-        substance_module = SubstanceModule(parent)
-        substance_module.frame.grid(row=1, column=1, ipady=10)
+        var = Variable(parent)
 
-        outer_layer = OuterLayer(parent)
+        self.label = tk.Label(
+            text="Chemical calculators", font=("Helvetica", "20"))
+        self.label.grid(row=1, column=1, sticky=tk.N)
 
-        self.fixture()  # for testing
+        self.close_button = tk.Button(parent, text="close", command=self.close)
+        self.close_button.grid(row=1, column=6, sticky=tk.N)
+
+    def close(self, _event=None):
+        self.parent.quit()

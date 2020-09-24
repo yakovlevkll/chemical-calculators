@@ -1,6 +1,6 @@
 import tkinter as tk
 from .Var import Variable
-from .Functions import Functions
+from reactions.reactions import Reaction
 
 
 class ReactionModule(tk.Frame):
@@ -9,8 +9,9 @@ class ReactionModule(tk.Frame):
         self.frame = tk.LabelFrame(parent, text="React Module")
         self.parent = parent
         self.reaction_txt = tk.StringVar()
+        # for testing/ remove later
+        self.fixture()
         var = Variable(parent)
-        func = Functions(parent)
 
         frame = tk.LabelFrame(parent, text="Enter Reaction")
         frame.grid(row=2, column=3, columnspan=2, ipady=10)
@@ -24,9 +25,32 @@ class ReactionModule(tk.Frame):
         #entry.bind("<w>", self.submit_func_calc)
 
         button_submit = tk.Button(
-            frame, text="Submit", command=func.submit_func_calc)
+            frame, text="Submit", command=self.submit_func_calc)
         button_submit.grid(
-            row=var.submit_row, column=var.submit_col, ipady=1, **padding)
+            row=var.submit_row, column=var.widgets_col, ipady=1)
 
-    def test_func(self):
-        print(1)
+    def pretty(self, _event=None):
+        text = self.substance_txt.get()
+        subs = Substance(text)
+
+        self.label["text"] = f'{subs.pretty_formula}\n{subs.mass}u\n{subs.composition}'
+
+    def fixture(self):
+        self.reaction_txt.set('H2 + O2 -> H2O')
+
+    def clear_entry_react(self, _event=None):
+        self.reaction_txt.set('')
+
+    def submit_func_calc(self, _event=None):
+        text = self.reaction_txt.get()
+        react = Reaction(text)
+
+        self.label["text"] = react
+
+        self.clear_entry_react()
+
+    def select_entry(self, _event=None):
+        entry.focus
+
+    '''def test_func(self):
+        print(1)'''
