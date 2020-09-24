@@ -33,10 +33,10 @@ class Functions:
             self.clear_entry_subs()
             print(1)
 
-            def submit_func_calc(self, _event=None):
-                text = self.reaction_txt.get()
-                react = Reaction(text)
+        def submit_func_calc(self, _event=None):
+            text = self.reaction_txt.get()
+            react = Reaction(text)
 
-                self.label2["text"] = react
+            self.label2["text"] = react
 
-                self.clear_entry_react
+            self.clear_entry_react
