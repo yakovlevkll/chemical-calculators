@@ -1,5 +1,5 @@
 import tkinter as tk
-from .Var import var
+from .Var import Variable
 from reactions.reactions import Reaction
 
 
@@ -11,9 +11,10 @@ class ReactionModule(tk.Frame):
         self.reaction_txt = tk.StringVar()
         # for testing/ remove later
         self.fixture()
+        var = Variable()
 
         frame = tk.LabelFrame(parent, text="Enter Reaction")
-        frame.grid(row=2, column=3, columnspan=2, padx=var.padx, pady=var.pady)
+        frame.grid(var.main_react_module)
 
         self.label = tk.Label(frame, text="")
         self.label.grid(row=1, column=var.widgets_col, ipady=10)
@@ -21,12 +22,16 @@ class ReactionModule(tk.Frame):
         entry = tk.Entry(
             frame, textvariable=self.reaction_txt, font=("Helvetica", "12"))
         entry.grid(row=var.entry_row, column=var.widgets_col, ipady=3)
-        #entry.bind("<w>", self.submit_func_calc)
+        parent.bind("<Control-Key-r>", self.submit_func_calc)
 
         button_submit = tk.Button(
             frame, text="Submit", command=self.submit_func_calc)
         button_submit.grid(
             row=var.submit_row, column=var.widgets_col, ipady=1)
+
+        self.instruct_label = tk.Label(frame, text="(Ctrl + r)")
+        self.instruct_label.grid(
+            row=var.instruct_label_row, column=var.widgets_col, ipady=3)
 
     def pretty(self, _event=None):
         text = self.substance_txt.get()

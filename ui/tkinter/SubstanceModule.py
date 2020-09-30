@@ -1,5 +1,5 @@
 import tkinter as tk
-from .Var import var
+from .Var import Variable
 from substance.substance import Substance
 
 
@@ -12,10 +12,10 @@ class SubstanceModule:
 
         # for testing/ remove later
         self.fixture()
+        var = Variable()
 
         frame = tk.LabelFrame(parent, text="Enter Substance")
-        frame.grid(row=var.subs_row, column=var.subs_col,
-                   columnspan=2, pady=var.pady, padx=var.padx)
+        frame.grid(var.main_substance_module)
 
         self.label = tk.Label(frame, text="")
         self.label.grid(row=1, column=var.widgets_col, ipady=10)
@@ -23,12 +23,16 @@ class SubstanceModule:
         entry = tk.Entry(
             frame, textvariable=self.substance_txt, font=("Helvetica", "12"))
         entry.grid(row=var.entry_row, column=var.widgets_col, ipady=3)
-        #parent.bind("<Control-Key-q>", self.submit_func_pretty)
+        parent.bind("<Control-Key-s>", self.submit_func_pretty)
 
         button_submit = tk.Button(
             frame, text="Submit", command=self.submit_func_pretty)
         button_submit.grid(
             row=var.submit_row, column=var.widgets_col, ipady=1)
+
+        self.instruct_label = tk.Label(frame, text="(Ctrl + s)")
+        self.instruct_label.grid(
+            row=var.instruct_label_row, column=var.widgets_col, ipady=3)
 
     def pretty(self, _event=None):
         text = self.substance_txt.get()
