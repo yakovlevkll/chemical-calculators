@@ -28,6 +28,7 @@ class MainApplication(tk.Frame):
 
         self.close_button = tk.Button(parent, text="close", command=self.close)
         self.close_button.grid(row=4, column=2, sticky=tk.N)
+        parent.bind("<Escape>", self.close)
 
     def close(self, _event=None):
         self.parent.quit()

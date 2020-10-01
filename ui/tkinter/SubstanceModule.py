@@ -1,5 +1,5 @@
 import tkinter as tk
-from .Var import Variable
+from .Var import var
 from substance.substance import Substance
 
 
@@ -11,8 +11,7 @@ class SubstanceModule:
         self.substance_txt = tk.StringVar()
 
         # for testing/ remove later
-        self.fixture()
-        var = Variable()
+        # self.fixture()
 
         frame = tk.LabelFrame(parent, text="Enter Substance")
         frame.grid(var.main_substance_module)
@@ -49,6 +48,3 @@ class SubstanceModule:
 
     def fixture(self):
         self.substance_txt.set('CO2')
-
-    '''def select_entry(self, _event=None):
-        entry.focus'''

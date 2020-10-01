@@ -1,5 +1,5 @@
 import tkinter as tk
-from .Var import Variable
+from .Var import var
 from reactions.reactions import Reaction
 
 
@@ -10,8 +10,7 @@ class ReactionModule(tk.Frame):
         self.parent = parent
         self.reaction_txt = tk.StringVar()
         # for testing/ remove later
-        self.fixture()
-        var = Variable()
+        # self.fixture()
 
         frame = tk.LabelFrame(parent, text="Enter Reaction")
         frame.grid(var.main_react_module)
