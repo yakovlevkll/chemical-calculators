@@ -8,8 +8,10 @@ Features:
 - Beautifies chemical formula for text output
 '''
 
-from helpers.string import subscript_it
-from table import TABLE
+from string import ascii_letters
+
+from .table import TABLE
+from helpers.string import subscript_it, clean_str
 
 
 class Substance:
@@ -36,10 +38,7 @@ class Substance:
         self.find_mass()
 
     def validate_formula(self):
-        for char in self.formula:
-            if not char.isascii() or not char.isalnum():
-                raise ValueError(
-                    f'Unknown character found - `{char}`')
+        self.formula = clean_str(self.formula, ascii_letters + "1234567890()")
 
     def prettify_formula(self):
         '''

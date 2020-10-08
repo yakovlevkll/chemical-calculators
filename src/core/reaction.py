@@ -1,26 +1,25 @@
 from string import ascii_letters
+
 from itertools import product
 import numpy as np
 
-from substance import Substance
+from .substance import Substance
 
+from helpers.string import clean_str
 
 class Reaction:
     def __init__(self, reaction):
         self.plain_reaction = reaction
-        self.sanitize()
+        self.validate()
         self.sepparate()
         self.find_atoms()
         self.solve()
 
-    def sanitize(self):
-        # Delete all unecessary chars
-        chars_to_left = ascii_letters + '0123456789()->=+'
-        temp = []
-        for char in self.plain_reaction:
-            if char in chars_to_left:
-                temp += char
-        self.clean_form = ''.join(temp)
+    def validate(self):
+        # Delete all unnecessary chars
+
+        self.clean_form = clean_str(
+            self.plain_reaction, ascii_letters + '0123456789()->=+')
 
     def sepparate(self):
         self.reactants = []
@@ -110,7 +109,8 @@ class Reaction:
         # solution = ' -> '.join(solution)
         # solution = ['2H2 + O2', '2H2O']
 
-        return f'{solution[0]} -> {solution[1]} ({self.plain_reaction})'
+        return f'''{solution[0]} -> {solution[1]} 
+        ({self.plain_reaction})'''
 
 
 if __name__ == "__main__":
