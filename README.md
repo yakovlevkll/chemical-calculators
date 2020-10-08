@@ -18,5 +18,5 @@
 To run the tests
 
 ```bash
-python -m unittest discover .
+pytest
 ```
