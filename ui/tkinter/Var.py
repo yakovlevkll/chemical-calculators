@@ -15,7 +15,8 @@ class Variable:
         self.label_row = 1
         self.entry_row = self.label_row + 1,
         self.submit_row = self.label_row + 2
-        self.instruct_label_row = self.label_row + 3
+        self.shortcut_label_row = self.label_row + 3
+        self.label_error_row = self.label_row + 4
 
         self.padx = 20
         self.pady = 20

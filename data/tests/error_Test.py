@@ -1,6 +1,6 @@
 
 
-def a(exp="iir+ii"):
+def a(exp="iyi+ii"):
     if not '+' in exp:
         return("Not a sum")
 

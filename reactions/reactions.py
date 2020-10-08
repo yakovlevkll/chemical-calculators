@@ -5,23 +5,22 @@ from substance.substance import Substance
 from itertools import product
 import numpy as np
 
+from helpers.string import clean_str
+
 
 class Reaction:
     def __init__(self, reaction):
         self.plain_reaction = reaction
-        self.sanitize()
+        self.validate()
         self.sepparate()
         self.find_atoms()
         self.solve()
 
-    def sanitize(self):
-        # Delete all unecessary chars
-        chars_to_left = ascii_letters + '0123456789()->=+'
-        temp = []
-        for char in self.plain_reaction:
-            if char in chars_to_left:
-                temp += char
-        self.clean_form = ''.join(temp)
+    def validate(self):
+        # Delete all unnecessary chars
+
+        self.clean_form = clean_str(
+            self.plain_reaction, ascii_letters + '0123456789()->=+')
 
     def sepparate(self):
         self.reactants = []
