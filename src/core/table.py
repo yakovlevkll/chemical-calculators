@@ -5,7 +5,7 @@ Periodic table.
 
 import json
 
-from data.atom import Atom
+from atom import Atom
 
 
 class Table(dict):

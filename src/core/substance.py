@@ -9,7 +9,7 @@ Features:
 '''
 
 from helpers.string import subscript_it
-from data.table import TABLE
+from table import TABLE
 
 
 class Substance:

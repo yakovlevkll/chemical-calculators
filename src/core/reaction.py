@@ -1,9 +1,8 @@
 from string import ascii_letters
-
-from substance.substance import Substance
-
 from itertools import product
 import numpy as np
+
+from substance import Substance
 
 
 class Reaction:

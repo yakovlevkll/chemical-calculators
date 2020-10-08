@@ -1,4 +1,4 @@
-from reactions.reactions import Reaction
+from src.reaction import Reaction
 
 
 def test_arrow():
