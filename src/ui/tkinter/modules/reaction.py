@@ -50,18 +50,20 @@ class ReactionModule(tk.Frame):
         self.entry = tk.Entry(
             self.frame, textvariable=self.entry_data)
         self.entry.grid(**self.cfg["entry"])
-        
+
         # Submit
         self.submit_btn = tk.Button(
             self.frame, text="Submit", command=self.submit)
         self.submit_btn.grid(**self.cfg["submit_btn"])
 
-        self.submit_label = tk.Label(self.frame, text="(Ctrl + R)")
+        self.submit_label = tk.Label(
+            self.frame, text="(Ctrl + R)")
         self.submit_label.grid(**self.cfg["submit_label"])
 
         # Error
         self.error_data = tk.StringVar()
-        self.error_label = tk.Label(self.frame, textvariable=self.error_data)
+        self.error_label = tk.Label(
+            self.frame, textvariable=self.error_data, fg="red")
         self.error_label.grid(**self.cfg["error"])
 
         # For testing purposes
@@ -81,7 +83,7 @@ class ReactionModule(tk.Frame):
 
     def error_clear(self):
         self.error_data.set('')
-        
+
     def error_show(self, msg):
         # change label_error colour
         self.error_data.set(msg)
@@ -93,7 +95,7 @@ class ReactionModule(tk.Frame):
         self.label_clear()
         self.error_clear()
         self.calc()
-        # self.entry_clear()
+        self.entry_clear()
 
     def testing_fixture(self):
         if not cfg.production_mode:

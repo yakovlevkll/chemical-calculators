@@ -5,7 +5,7 @@ import tkinter.font as tkFont
 class Config:
 
     # Production state disables all testing fixture
-    production_mode = False
+    production_mode = True
 
     def __init__(self):
 
@@ -30,21 +30,20 @@ class Config:
 
         # Main Window
 
-        
        # self.fontSettings()
 
-    '''@staticmethod
-    def fontSettings(fontsize=12):
-        #default_font = tkFont.nametofont("TkDefaultFont")
-        #text_font = tkFont.nametofont("TkTextFont")
-        #fixed_font = tkFont.nametofont("TkFixedFont")
-        #text_font = tkFont.Font(family="Helvetica", size=36, weight="bold")
-        heading_font = tkFont.nametofont("TkHeadingFont")
 
-        # default_font.configure(size=fontsize)
-        # text_font.configure(size=fontsize)
-        # fixed_font.configure(size=fontsize)
-        heading_font.configure(size=20)'''
+def fontSettings(fontsize=12):
+    default_font = tkFont.nametofont("TkDefaultFont")
+    text_font = tkFont.nametofont("TkTextFont")
+    fixed_font = tkFont.nametofont("TkFixedFont")
+    text_font = tkFont.Font(family="Helvetica", size=36, weight="bold")
+    heading_font = tkFont.nametofont("TkHeadingFont")
+
+    default_font.configure(size=fontsize)
+    text_font.configure(size=fontsize)
+    fixed_font.configure(size=fontsize)
+    heading_font.configure(size=20)
 
 
 cfg = Config()

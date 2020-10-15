@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.font as tkFont
 
-from .config import cfg
+from .config import cfg, fontSettings
 from .modules.reaction import ReactionModule
 from .modules.substance import SubstanceModule
 
@@ -58,14 +58,13 @@ class MainApplication(tk.Frame):
 
         self.close_button = tk.Button(parent, text="Close", command=self.close)
         self.close_button.grid(**self.cfg['close_btn'])
-        
 
     def close(self, _event=None):
         self.parent.quit()
 
 
-
 def start_gui():
     root = tk.Tk()
+    fontSettings()
     MainApplication(root)
     root.mainloop()
