@@ -143,12 +143,3 @@ class Substance:
         Composition: {self.composition}
         Mass: {self.mass} g/mol
         '''
-
-
-sub_1 = Substance('OH')
-sub_2 = Substance('Ba')
-
-sub_1 * 2
-sub_1 + sub_2
-
-print(sub_1.composition)
