@@ -55,6 +55,12 @@ def test_spread_atom():
     assert sub.composition == {'C': 2, 'H': 6, 'O': 1}
 
 
+def test_multiplication():
+    sub = 2 * Substance('OH')
+
+    assert sub.composition == {'H': 2, 'O': 2}
+
+
 @pytest.mark.skip(reason="feature is not implemented yet")
 def test_brackets():
     sub = Substance('Ba(OH)2')
