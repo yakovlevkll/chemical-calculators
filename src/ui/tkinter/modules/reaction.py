@@ -35,7 +35,7 @@ class ReactionModule(tk.Frame):
     def __init__(self, parent):
         # Parent concerns
         self.parent = parent
-        self.parent.bind("<Control-Key-R>", self.submit)
+        self.parent.bind("<Control-Key-r>", self.submit)
 
         # Module frame
         self.frame = tk.LabelFrame(parent, text="Reaction Module")

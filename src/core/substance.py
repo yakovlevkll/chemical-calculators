@@ -71,9 +71,10 @@ class Substance:
         # Substance()
 
     def __mul__(self, num):
-        # TODO: Check
-        self.composition = {key: val * num for key,
-                            val in self.composition.items()}
+        sub = Substance(self.formula)
+        sub.composition = {key: val * num for key,
+                           val in self.composition.items()}
+        return sub
 
     def __add__(self, sub):
         # TODO: Check
@@ -93,14 +94,14 @@ class Substance:
         composition = {}
 
         brackets_pattern = r'\((.+)\)(\d*)'
-        brackets_block = re.search(brackets_pattern, formula)
+        brackets_in_formula = re.search(brackets_pattern, formula)
 
-        if brackets_block:
-            inner, index = brackets_block.groups()
-            pass
-            # sub = Substance()
+        if brackets_in_formula:
+            inner, index = brackets_in_formula.groups()
             # Multiply by brackets index
-            # Replace block from original formula
+            bracket_sub = Substance(inner)*int(index)
+            start, stop = brackets_in_formula.span()
+            formula = formula[:start] + formula[stop:]
 
         # Split formula in atom-index pairs
         atom_pattern = r'([A-Z]{1}[a-z]{0,1})(\d*)'
@@ -119,9 +120,11 @@ class Substance:
             else:
                 composition[name] += index
 
-        if brackets_block:
-            pass
-            # Add brackets to composition
+        if brackets_in_formula:
+            for key, val in bracket_sub.composition.items():
+                if not key in composition:
+                    composition.setdefault(key, 0)
+                composition[key] += val
 
         self.composition = composition
 

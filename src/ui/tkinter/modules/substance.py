@@ -35,7 +35,7 @@ class SubstanceModule(tk.Frame):
     def __init__(self, parent):
         # Parent concerns
         self.parent = parent
-        self.parent.bind("<Control-Key-S>", self.submit)
+        self.parent.bind("<Control-Key-s>", self.submit)
 
         # Module frame
         self.frame = tk.LabelFrame(parent, text="Substance Module")
