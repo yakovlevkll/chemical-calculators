@@ -1,8 +1,8 @@
 import tkinter as tk
 
 from ..config import cfg
-from src.core.substance import Substance
-from src.helpers.string import clean_str
+from core.substance import Substance
+from helpers.string import clean_str
 
 
 class SubstanceModule(tk.Frame):

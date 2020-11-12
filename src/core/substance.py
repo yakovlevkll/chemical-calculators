@@ -12,7 +12,7 @@ from string import ascii_letters
 import re
 
 from .table import TABLE
-from src.helpers.string import subscript_it, clean_str
+from helpers.string import subscript_it, clean_str
 
 
 class Substance:
