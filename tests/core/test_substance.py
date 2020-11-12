@@ -56,7 +56,7 @@ def test_spread_atom():
 
 
 def test_multiplication():
-    sub = 2 * Substance('OH')
+    sub = Substance('OH') * 2
 
     assert sub.composition == {'H': 2, 'O': 2}
 
