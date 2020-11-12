@@ -1,6 +1,6 @@
 import pytest
 
-from src.table import TABLE
+from src.core.table import TABLE
 
 
 def test_out_of_range():

@@ -5,7 +5,7 @@ import numpy as np
 
 from .substance import Substance
 
-from helpers.string import clean_str
+from src.helpers.string import clean_str
 
 class Reaction:
     def __init__(self, reaction):

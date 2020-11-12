@@ -1,8 +1,8 @@
 import tkinter as tk
 
 from ..config import cfg
-from core.reaction import Reaction
-from helpers.string import clean_str
+from src.core.reaction import Reaction
+from src.helpers.string import clean_str
 
 
 class ReactionModule(tk.Frame):
