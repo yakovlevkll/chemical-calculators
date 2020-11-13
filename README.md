@@ -5,10 +5,10 @@
 - [x] Determines substance composition
 - [x] Calculates molar (atomic) mass of a substance
 - [x] Beautifies chemical formula for text output
+- [x] Handle compounds with brackets
 
 ## Todo
 
-- [ ] Handle compounds with brackets
 - [ ] Balance chemical reactions
 
 ## Contribution
