@@ -51,7 +51,7 @@ class Substance:
         pass
 
     def validate_formula(self):
-        self.formula = clean_str(self.formula, ascii_letters + "1234567890()")
+        self.formula = clean_str(self.formula, ascii_letters + "1234567890()[]")
 
     def prettify_formula(self):
         '''
@@ -69,32 +69,44 @@ class Substance:
 
         stack = ['']
 
-        bracket_index_mode = False
-        bracket_index = ''
+        bracket_index = None
 
         for char in self.formula:
-            if bracket_index_mode:
+            if not bracket_index == None:
                 if char.isnumeric():
                     bracket_index += char
                     continue
                 else:
                     last = stack.pop()
-                    pairs = Substance.get_atom_index_pairs(last)
-                    num = int(bracket_index)
-                    multiplied_sub = [(key, val * num) for key, val in pairs]
-                    stack[-1] += ''.join([f'{key}{val}' for key, val in multiplied_sub])
+                    stack[-1] += Substance.multiply_indexes(last, bracket_index)
 
-                    bracket_index_mode = False
-                    bracket_index = ''
+                    bracket_index = None
 
             if char.isalnum():
                 stack[-1] += char
-            elif char == '(':
+            elif char in ['(', '[']:
                 stack.append('')
-            elif char == ')':
-                bracket_index_mode = True
+            elif char in [')', ']']:
+                bracket_index = ''
+
+        if bracket_index:
+            last = stack.pop()
+            stack[-1] += Substance.multiply_indexes(last, bracket_index)
 
         self.expanded_formula = stack[0]
+
+    @staticmethod
+    def multiply_indexes(formula, factor):
+        if not type(factor) is int:
+            factor = int(factor)
+
+        if factor == 0:
+            factor = 1
+
+        pairs = Substance.get_atom_index_pairs(formula)
+        pairs_mult = [(key, val * factor) for key, val in pairs]
+        return ''.join([f'{key}{val}' for key, val in pairs_mult])
+
 
     @staticmethod
     def get_atom_index_pairs(formula):

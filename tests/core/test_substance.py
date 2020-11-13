@@ -79,7 +79,6 @@ def test_two_single_brackets():
     assert sub.composition == {'Fe': 1, 'O': 6, 'H': 10}
 
 
-@pytest.mark.skip(reason="feature is not implemented yet")
 def test_nested_brackets():
     sub = Substance('TiCl2[(CH3)2PCH2CH2P(CH3)2]2')
 
