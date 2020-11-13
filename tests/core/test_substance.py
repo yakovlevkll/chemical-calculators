@@ -61,11 +61,22 @@ def test_multiplication():
     assert sub.composition == {'H': 2, 'O': 2}
 
 
-@pytest.mark.skip(reason="feature is not implemented yet")
-def test_brackets():
+def test_single_brackets_1():
     sub = Substance('Ba(OH)2')
 
     assert sub.composition == {'Ba': 1, 'O': 2, 'H': 2}
+
+
+def test_single_brackets_2():
+    sub = Substance('PtCl2(NH3)2')
+
+    assert sub.composition == {'Pt': 1, 'Cl': 2, 'N': 2, 'H': 6}
+
+
+def test_two_single_brackets():
+    sub = Substance('Fe(H2O)4(OH)2')
+
+    assert sub.composition == {'Fe': 1, 'O': 6, 'H': 10}
 
 
 @pytest.mark.skip(reason="feature is not implemented yet")
