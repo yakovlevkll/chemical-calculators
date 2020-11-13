@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Run tkinter app",
+      "type": "python",
+      "request": "launch",
+      "program": "src/app.py",
+      "console": "integratedTerminal"
+    }
+  ]
+}
