@@ -28,6 +28,7 @@ class Substance:
 
     formula = ''
     pretty_formula = ''
+    expanded_formula = ''
     composition = {}
     mass = 0
 
@@ -38,8 +39,19 @@ class Substance:
         self.find_composition()
         self.find_mass()
 
+    def __mul__(self, num):
+        # TODO: Is it expected behaviour?
+        sub = Substance(self.formula)
+        sub.composition = {key: val * num for key,
+                           val in self.composition.items()}
+        return sub
+
+    def __add__(self, sub):
+        # TODO: Should it be a Reaction?
+        pass
+
     def validate_formula(self):
-        self.formula = clean_str(self.formula, ascii_letters + "1234567890()")
+        self.formula = clean_str(self.formula, ascii_letters + "1234567890()[]")
 
     def prettify_formula(self):
         '''
@@ -50,83 +62,87 @@ class Substance:
 
         self.pretty_formula = ''.join([subscript_it(char) for char in chars])
 
-    def find_in_brackets(self, formula):
-        bracket = ''
-        temp = formula.split('(')
-        temp2 = temp[2].split(')')
+    def expand_formula(self):
+        '''
+        Determines atomic composition of a substance
+        '''
 
-        bracket += temp2[1]
+        stack = ['']
 
-    def brackets_rule(self, bracket_block):  # working with brackets
-        factor = ''
-        for char in bracket_block[::-1]:
-            if char.isnumeric():
-                factor += char
-            else:
-                break
+        bracket_index = None
 
-        for element in find_in_bracket(bracket_block):
-            pass
+        for char in self.formula:
+            if not bracket_index == None:
+                if char.isnumeric():
+                    bracket_index += char
+                    continue
+                else:
+                    last = stack.pop()
+                    stack[-1] += Substance.multiply_indexes(last, bracket_index)
 
-        # Substance()
+                    bracket_index = None
 
-    def __mul__(self, num):
-        sub = Substance(self.formula)
-        sub.composition = {key: val * num for key,
-                           val in self.composition.items()}
-        return sub
+            if char.isalnum():
+                stack[-1] += char
+            elif char in ['(', '[']:
+                stack.append('')
+            elif char in [')', ']']:
+                bracket_index = ''
 
-    def __add__(self, sub):
-        # TODO: Check
-        # comp = sub.composition
-        # new = {}
+        if bracket_index:
+            last = stack.pop()
+            stack[-1] += Substance.multiply_indexes(last, bracket_index)
 
-        # self.composition = {key: val + sub[key] for key,
-        #                     val in self.composition.items()}
-        print('We are here')
+        self.expanded_formula = stack[0]
+
+    @staticmethod
+    def multiply_indexes(formula, factor):
+        if not type(factor) is int:
+            factor = int(factor)
+
+        if factor == 0:
+            factor = 1
+
+        pairs = Substance.get_atom_index_pairs(formula)
+        pairs_mult = [(key, val * factor) for key, val in pairs]
+        return ''.join([f'{key}{val}' for key, val in pairs_mult])
+
+
+    @staticmethod
+    def get_atom_index_pairs(formula):
+        '''
+        Split formula in atom-index pairs
+        '''
+
+        pattern = r'([A-Z]{1}[a-z]{0,1})(\d*)'
+        res = re.findall(pattern, formula)
+
+        pairs = []
+
+        for atom, index in res:
+            if index == '':
+                index = 1
+            
+            pairs.append((atom, int(index)))
+
+        return pairs
+
 
     def find_composition(self):
         '''
         Determines atomic composition of a substance
         '''
 
-        formula = self.formula
-        composition = {}
+        self.expand_formula()
+        self.composition = {}
 
-        brackets_pattern = r'\((.+)\)(\d*)'
-        brackets_in_formula = re.search(brackets_pattern, formula)
+        pairs = Substance.get_atom_index_pairs(self.expanded_formula)
 
-        if brackets_in_formula:
-            inner, index = brackets_in_formula.groups()
-            # Multiply by brackets index
-            bracket_sub = Substance(inner)*int(index)
-            start, stop = brackets_in_formula.span()
-            formula = formula[:start] + formula[stop:]
+        for atom, index in pairs:
+            if not atom in self.composition:
+                self.composition.setdefault(atom, 0)
 
-        # Split formula in atom-index pairs
-        atom_pattern = r'([A-Z]{1}[a-z]{0,1})(\d*)'
-        pairs = re.findall(atom_pattern, formula)
-
-        for pair in pairs:
-            name, index = pair
-
-            if index == '':
-                index = 1
-            else:
-                index = int(index)
-
-            if not name in composition:
-                composition.setdefault(name, index)
-            else:
-                composition[name] += index
-
-        if brackets_in_formula:
-            for key, val in bracket_sub.composition.items():
-                if not key in composition:
-                    composition.setdefault(key, 0)
-                composition[key] += val
-
-        self.composition = composition
+            self.composition[atom] += index
 
     def find_mass(self):
         '''
@@ -135,8 +151,8 @@ class Substance:
 
         self.mass = 0
 
-        for name, amount in self.composition.items():
-            self.mass += TABLE[name].mass * amount
+        for atom, index in self.composition.items():
+            self.mass += TABLE[atom].mass * index
 
         self.mass = round(self.mass, 3)
 
