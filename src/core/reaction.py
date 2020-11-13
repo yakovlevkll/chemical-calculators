@@ -1,49 +1,54 @@
 from string import ascii_letters
-
 from itertools import product
+from typing import Set, List
 import numpy as np
+import numpy.typing as npt
 
 from .substance import Substance
-
-from helpers.string import clean_str
+from helpers.string import clean_ws
 
 class Reaction:
-    def __init__(self, reaction):
-        self.plain_reaction = reaction
+    '''
+    Reacton class
+
+    TODO: add description
+    '''
+
+    def __init__(self, reaction: str):
+        self.reaction: str = clean_ws(reaction)
         self.validate()
-        self.sepparate()
-        self.find_atoms()
+
+        self.atoms: Set[str] = set([])
+        self.reactants: List[Substance] = []
+        self.products: List[Substance] = []
+        self.solution: List[int] = []
+
+        self.parse()
         self.solve()
 
     def validate(self):
-        # Delete all unnecessary chars
+        allowed_chars = ascii_letters + '0123456789()->=+'
 
-        self.clean_form = clean_str(
-            self.plain_reaction, ascii_letters + '0123456789()->=+')
+        for char in self.reaction:
+            if not char in allowed_chars:
+                raise ValueError(f'Unknown char found: `{char}`')
 
-    def sepparate(self):
-        self.reactants = []
-        self.products = []
 
-        # use split function to separate
-
-        if '=' in self.clean_form:
-            temp_form = self.clean_form.split('=')
-
-        elif '->' in self.clean_form:
-            temp_form = self.clean_form.split('->')
-
+    def split(self):
+        if '=' in self.reaction:
+            reaction = self.reaction.split('=')
+        elif '->' in self.reaction:
+            reaction = self.reaction.split('->')
         else:
             raise ValueError('No reaction symbol found')
 
-        self.reactants = temp_form[0].split('+')
-        self.products = temp_form[1].split('+')
+        return [item.split('+') for item in reaction]
 
-    def find_atoms(self):
-        self.atoms = set([])
+    def parse(self):
+        reactants, products = self.split()
 
-        self.reactants = [Substance(item) for item in self.reactants]
-        self.products = [Substance(item) for item in self.products]
+        self.reactants = [Substance(item) for item in reactants]
+        self.products = [Substance(item) for item in products]
 
         for subs in self.reactants:
             self.atoms.update(set(subs.composition.keys()))
@@ -68,7 +73,7 @@ class Reaction:
 
             matrix.append(coeffs)
 
-        coeffs = np.array(matrix)
+        coeffs: npt.ArrayLike = np.array(matrix)
 
         combs = product(range(1, 12), repeat=len(self.atoms) + 1)
 
@@ -110,9 +115,4 @@ class Reaction:
         # solution = ['2H2 + O2', '2H2O']
 
         return f'''{solution[0]} -> {solution[1]} 
-        ({self.plain_reaction})'''
-
-
-if __name__ == "__main__":
-    test = Reaction('H2 + O2 = H2O')
-    print(test)
+        ({self.reaction})'''

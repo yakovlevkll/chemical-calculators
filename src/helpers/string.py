@@ -2,28 +2,34 @@
 Some helpers for main scripts.
 '''
 
+from typing import List
 
-def subscript_it(char):
+def subscript_it(string: str) -> str:
     '''
     Turns `5` into `₅`
     '''
 
-    digits = '₀₁₂₃₄₅₆₇₈₉'
-    if char.isdigit():
-        return digits[int(char)]
-    else:
-        return char
+    subs = '₀₁₂₃₄₅₆₇₈₉'
+
+    res: List[str] = []
+
+    for char in string:
+        if char.isdigit():
+            res.append(subs[int(char)])
+        else:
+            res.append(char)
+    
+    return ''.join(res)
 
 
-def clean_str(text, chars_to_check, chars_to_delete=" \t\r", error_msg="Unknown char found: "):
+def clean_str(string: str, chars_to_del: str):
     res = []
 
-    for char in text:
-        if char in chars_to_check:
+    for char in string:
+        if not char in chars_to_del:
             res.append(char)
-        elif char in chars_to_delete:
-            pass
-        else:
-            raise ValueError(error_msg + char)
 
     return ''.join(res)
+
+def clean_ws(string: str) -> str:
+    return clean_str(string, ' \n\r')
