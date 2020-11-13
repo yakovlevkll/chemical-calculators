@@ -1,6 +1,6 @@
 import pytest
 
-from core.substance import Substance
+from src.core.substance import Substance
 
 
 def test_one_char_symbol():
