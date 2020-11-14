@@ -20,8 +20,7 @@ class Substance:
     '''
     Main class for substance.
 
-    formula - something like `H20`
-    pretty_formula - beautified version of the formula
+    formula - something like `H2O`
     composition - self-descriptive, something like {'H': 2, 'O': 1}
     mass - molar (atomic) mass
     '''
@@ -30,12 +29,9 @@ class Substance:
         self.formula: str = clean_ws(formula)
         self.validate()
 
-        self.pretty_formula: str = ''
-        self.expanded_formula: str = ''
         self.composition: Optional[Composition] = None
         self.mass: float = 0
 
-        self.prettify_formula()
         self.find_composition()
         self.find_mass()
 
@@ -45,13 +41,6 @@ class Substance:
         for char in self.formula:
             if not char in allowed_chars:
                 raise ValueError(f'Unknown char is given: `{char}`')
-
-    def prettify_formula(self):
-        '''
-        Turns `H2O` into `H₂O`
-        '''
-
-        self.pretty_formula = subscript_it(self.formula)
 
     def find_composition(self):
         '''
@@ -101,9 +90,13 @@ class Substance:
 
         self.mass = round(self.mass, 3)
 
-    def __repr__(self):
-        return f'''
-        Formula: {self.pretty_formula}
-        Composition: {self.composition}
-        Mass: {self.mass} g/mol
+    def __str__(self):
         '''
+        Returns beautified version of the formula with subscripts
+        For example, `H2O` becomes `H₂O`
+        '''
+
+        return subscript_it(self.formula)
+
+    def __repr__(self):
+        return f'{str(self)} ({repr(self.composition)}, {self.mass} g/mol)'
