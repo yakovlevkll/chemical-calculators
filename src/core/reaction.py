@@ -22,6 +22,7 @@ class Reaction:
         self.atoms: set[str] = set([])
         self.reactants: list[ReactionItem] = []
         self.products: list[ReactionItem] = []
+        self.substances: list[ReactionItem] = []
         self.solution: list[int] = []
 
         self.parse()
@@ -47,23 +48,20 @@ class Reaction:
 
         self.reactants = [ReactionItem(item) for item in reactants]
         self.products = [ReactionItem(item) for item in products]
+        self.substances = self.reactants + self.products
 
         for subs in self.reactants:
             self.atoms.update(set(subs.composition.keys()))
 
     def get_coeffs_matrix(self):
-        r_len = len(self.reactants)
-        p_len = len(self.products)
-        items_len = r_len + p_len
-        matrix = {key: [0]*items_len for key in self.atoms}
+        matrix = {key: [0]*len(self.substances) for key in self.atoms}
 
-        for i, item in enumerate(self.reactants):
+        for i, item in enumerate(self.substances):
             for atom, index in item.composition.items():
-                matrix[atom][i] += index
-
-        for i, item in enumerate(self.products):
-            for atom, index in item.composition.items():
-                matrix[atom][i + r_len - 1] += index
+                if i < len(self.reactants):
+                    matrix[atom][i] = index
+                else:
+                    matrix[atom][i] = -index
 
         return np.array(list(matrix.values()))
 
@@ -77,8 +75,10 @@ class Reaction:
 
             if np.count_nonzero(res, axis=None) == 0:
                 self.solution = list(solution)
-                print(solution)
                 break
+
+        for i, item in enumerate(self.substances):
+            item.coeff = self.solution[i]
 
     def __str__(self):
         reactants = ' + '.join([str(item) for item in self.reactants])
