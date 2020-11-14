@@ -83,7 +83,6 @@ class Reaction:
     def __str__(self):
         reactants = ' + '.join([str(item) for item in self.reactants])
         products = ' + '.join([str(item) for item in self.products])
-
         return f'{reactants} -> {products}'
 
 
@@ -95,7 +94,6 @@ class ReactionItem(Substance):
     def __str__(self):
         formula = super().__str__()
         coeff = '' if self.coeff == 1 else self.coeff
-
         return f'{coeff}{formula}'
 
     def __repr__(self):

@@ -73,7 +73,7 @@ class ReactionModule(tk.Frame):
 
         try:
             self.reaction = Reaction(value)
-            self.label_data.set(self.reaction.solution)
+            self.label_data.set(str(self.reaction))
         except ValueError as e:
             self.error_show(e)
 

@@ -1,3 +1,5 @@
+import pytest
+
 from core.reaction import Reaction
 
 
@@ -13,7 +15,22 @@ def test_equal_sign():
     assert react.solution == [6, 6, 1, 6]
 
 
-def test_substances_with_brackets():
+@pytest.mark.skip('Not implemented yet')
+def test_substances_with_brackets_1():
+    react = Reaction('FeCl3 + NaOH = Fe(OH)3 + NaCl')
+
+    assert react.solution == [1, 3, 1, 3]
+
+
+@pytest.mark.skip('Not implemented yet')
+def test_substances_with_brackets_2():
+    react = Reaction('Fe(OH)3 + H2SO4 = Fe2(SO4)3 + H2O')
+
+    assert react.solution == [2, 3, 1, 6]
+
+
+@pytest.mark.skip('Takes algorithm long time to solve')
+def test_substances_with_brackets_3():
     react = Reaction('Al + HNO3 = Al(NO3)3 + NH4NO3 + H2O')
-    
+
     assert react.solution == [8, 30, 8, 3, 9]
