@@ -8,11 +8,12 @@ Features:
 - Beautifies chemical formula for text output
 '''
 
-from string import ascii_letters
 import re
+from string import ascii_letters
+from typing import Union
 
 from .table import TABLE
-from helpers.string import subscript_it, clean_str
+from helpers.string import subscript_it, clean_ws
 
 
 class Substance:
@@ -26,41 +27,46 @@ class Substance:
     mass - molar (atomic) mass
     '''
 
-    formula = ''
-    pretty_formula = ''
-    expanded_formula = ''
-    composition = {}
-    mass = 0
+    def __init__(self, formula: str):
+        self.formula: str = clean_ws(formula)
+        self.validate()
 
-    def __init__(self, formula):
-        self.formula = formula
-        self.validate_formula()
+        self.pretty_formula: str = ''
+        self.expanded_formula: str = ''
+        self.composition: dict[str, int] = {}
+        self.mass: float = 0
+
         self.prettify_formula()
         self.find_composition()
         self.find_mass()
 
-    def __mul__(self, num):
+    def __mul__(self, factor: int):
         # TODO: Is it expected behaviour?
-        sub = Substance(self.formula)
-        sub.composition = {key: val * num for key,
-                           val in self.composition.items()}
-        return sub
+        if type(factor) is int:
+            sub = Substance(self.formula)
+            sub.composition = {key: val * factor for key,
+                            val in self.composition.items()}
+            return sub
+        else:
+            raise ValueError(f'The factor type must be `int`')
 
-    def __add__(self, sub):
+    def __add__(self):
         # TODO: Should it be a Reaction?
         pass
 
-    def validate_formula(self):
-        self.formula = clean_str(self.formula, ascii_letters + "1234567890()[]")
+    def validate(self):
+        allowed_chars = ascii_letters + "1234567890()[]"
+
+        for char in self.formula:
+            if not char in allowed_chars:
+                raise ValueError(f'Unknown char is given: `{char}`')
 
     def prettify_formula(self):
         '''
         Turns `H2O` into `H₂O`
         '''
 
-        chars = list(self.formula)
-
-        self.pretty_formula = ''.join([subscript_it(char) for char in chars])
+        self.pretty_formula = subscript_it(self.formula)
 
     def expand_formula(self):
         '''
@@ -96,7 +102,7 @@ class Substance:
         self.expanded_formula = stack[0]
 
     @staticmethod
-    def multiply_indexes(formula, factor):
+    def multiply_indexes(formula: str, factor: Union[str, int]) -> str:
         if not type(factor) is int:
             factor = int(factor)
 
@@ -109,7 +115,7 @@ class Substance:
 
 
     @staticmethod
-    def get_atom_index_pairs(formula):
+    def get_atom_index_pairs(formula: str):
         '''
         Split formula in atom-index pairs
         '''

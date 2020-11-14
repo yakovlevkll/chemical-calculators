@@ -1,25 +1,21 @@
-'''
-Atom class.
-
-'''
-
-
 class Atom:
     '''
+    Atom class.
+
+    Z: int
+    symbol: str
+    name: str
+    mass: float
+    electron_structure: list
     '''
 
-    Z = 0
-    symbol = ''
-    name = ''
-    mass = 0
-    electron_config = ''
+    def __init__(self, Z: int, symbol: str, mass: float):
+        self.Z: int = Z
+        self.symbol: str = symbol
+        self.mass: float = mass
 
-    def __init__(self, Z, symbol, mass):
-        self.Z = Z
-        self.symbol = symbol
-        self.mass = mass
-
-    def find_electron_config(self):
+    def find_electron_structure(self):
+        # TODO: implement
         pass
 
     def __repr__(self):
