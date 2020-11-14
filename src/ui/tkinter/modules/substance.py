@@ -2,7 +2,6 @@ import tkinter as tk
 
 from ..config import cfg
 from core.substance import Substance
-from helpers.string import clean_str
 
 
 class SubstanceModule(tk.Frame):
@@ -72,9 +71,9 @@ class SubstanceModule(tk.Frame):
         value = self.entry_data.get()
 
         try:
-            self.subs = Substance(value)
+            self.sub = Substance(value)
             self.label_data.set(
-                f'{self.subs.pretty_formula}\n{self.subs.mass}u\n{self.subs.composition}')
+                f'{str(self.sub)}\n{self.sub.mass}u\n{repr(self.sub.composition)}')
         except ValueError as e:
             self.error_show(e)
 

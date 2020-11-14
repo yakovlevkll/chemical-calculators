@@ -6,6 +6,7 @@ import numpy as np
 from .substance import Substance
 from helpers.string import clean_ws
 
+
 class Reaction:
     '''
     Reacton class
@@ -31,7 +32,6 @@ class Reaction:
         for char in self.reaction:
             if not char in allowed_chars:
                 raise ValueError(f'Unknown char found: `{char}`')
-
 
     def split(self):
         if '=' in self.reaction:
@@ -84,7 +84,7 @@ class Reaction:
                 self.solution = list(solution)
                 break
 
-    def __repr__(self):
+    def __str__(self):
         len_reactants = len(self.reactants)
 
         reactant_coeffs = self.solution[:len_reactants]
@@ -102,10 +102,10 @@ class Reaction:
 
         for half in equation:
             temp = []
-            for coeff, subs in half:
+            for coeff, sub in half:
                 if coeff == 1:
                     coeff = ''
-                temp.append(f'{coeff}{subs.pretty_formula}')
+                temp.append(f'{coeff}{str(sub)}')
             # temp = ['2H2', 'O2']
             solution.append(' + '.join(temp))
             # solution = ['2H2 + O2']
@@ -113,5 +113,4 @@ class Reaction:
         # solution = ' -> '.join(solution)
         # solution = ['2H2 + O2', '2H2O']
 
-        return f'''{solution[0]} -> {solution[1]} 
-        ({self.reaction})'''
+        return f'{solution[0]} -> {solution[1]}'
