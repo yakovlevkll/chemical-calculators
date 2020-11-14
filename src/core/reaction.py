@@ -2,78 +2,73 @@ from string import ascii_letters
 from itertools import product
 
 import numpy as np
+from numpy.lib.npyio import recfromtxt
 
 from .substance import Substance
 from helpers.string import clean_ws
 
+
 class Reaction:
     '''
-    Reacton class
+    Reaction class.
 
     TODO: add description
     '''
 
-    def __init__(self, reaction: str):
-        self.reaction: str = clean_ws(reaction)
+    def __init__(self, equation: str):
+        self.equation: str = clean_ws(equation)
         self.validate()
 
         self.atoms: set[str] = set([])
-        self.reactants: list[Substance] = []
-        self.products: list[Substance] = []
+        self.reactants: list[ReactionItem] = []
+        self.products: list[ReactionItem] = []
         self.solution: list[int] = []
 
         self.parse()
         self.solve()
 
     def validate(self):
+        # TODO: Improve validation
         allowed_chars = ascii_letters + '0123456789()->=+'
 
-        for char in self.reaction:
+        for char in self.equation:
             if not char in allowed_chars:
                 raise ValueError(f'Unknown char found: `{char}`')
 
-
-    def split(self):
-        if '=' in self.reaction:
-            reaction = self.reaction.split('=')
-        elif '->' in self.reaction:
-            reaction = self.reaction.split('->')
+    def parse(self):
+        if '=' in self.equation:
+            eq = self.equation.split('=')
+        elif '->' in self.equation:
+            eq = self.equation.split('->')
         else:
             raise ValueError('No reaction symbol found')
 
-        return [item.split('+') for item in reaction]
+        reactants, products = [item.split('+') for item in eq]
 
-    def parse(self):
-        reactants, products = self.split()
-
-        self.reactants = [Substance(item) for item in reactants]
-        self.products = [Substance(item) for item in products]
+        self.reactants = [ReactionItem(item) for item in reactants]
+        self.products = [ReactionItem(item) for item in products]
 
         for subs in self.reactants:
             self.atoms.update(set(subs.composition.keys()))
 
+    def get_coeffs_matrix(self):
+        r_len = len(self.reactants)
+        p_len = len(self.products)
+        items_len = r_len + p_len
+        matrix = {key: [0]*items_len for key in self.atoms}
+
+        for i, item in enumerate(self.reactants):
+            for atom, index in item.composition.items():
+                matrix[atom][i] += index
+
+        for i, item in enumerate(self.products):
+            for atom, index in item.composition.items():
+                matrix[atom][i + r_len - 1] += index
+
+        return np.array(list(matrix.values()))
+
     def solve(self):
-        matrix = []
-
-        for atom in self.atoms:
-            coeffs = []
-
-            for item in self.reactants:
-                if atom in item.composition:
-                    coeffs.append(item.composition[atom])
-                else:
-                    coeffs.append(0)
-
-            for item in self.products:
-                if atom in item.composition:
-                    coeffs.append(-item.composition[atom])
-                else:
-                    coeffs.append(0)
-
-            matrix.append(coeffs)
-
-        coeffs = np.array(matrix)
-
+        coeffs = self.get_coeffs_matrix()
         combs = product(range(1, 12), repeat=len(self.atoms) + 1)
 
         for i in combs:
@@ -82,36 +77,27 @@ class Reaction:
 
             if np.count_nonzero(res, axis=None) == 0:
                 self.solution = list(solution)
+                print(solution)
                 break
 
+    def __str__(self):
+        reactants = ' + '.join([str(item) for item in self.reactants])
+        products = ' + '.join([str(item) for item in self.products])
+
+        return f'{reactants} -> {products}'
+
+
+class ReactionItem(Substance):
+    def __init__(self, data, coeff: int = 1, *args, **kwargs):
+        super().__init__(data, *args, **kwargs)
+        self.coeff = coeff
+
+    def __str__(self):
+        formula = super().__str__()
+        coeff = '' if self.coeff == 1 else self.coeff
+
+        return f'{coeff}{formula}'
+
     def __repr__(self):
-        len_reactants = len(self.reactants)
-
-        reactant_coeffs = self.solution[:len_reactants]
-        product_coeffs = self.solution[len_reactants:]
-
-        equation = [zip(reactant_coeffs, self.reactants),
-                    zip(product_coeffs, self.products)]
-
-        # equation = [
-        #     [(2, Substance('H2')), (1, Substance('O2'))],
-        #     [(2, Substance('H2O'))]
-        #     ]
-
-        solution = []
-
-        for half in equation:
-            temp = []
-            for coeff, subs in half:
-                if coeff == 1:
-                    coeff = ''
-                temp.append(f'{coeff}{subs.pretty_formula}')
-            # temp = ['2H2', 'O2']
-            solution.append(' + '.join(temp))
-            # solution = ['2H2 + O2']
-
-        # solution = ' -> '.join(solution)
-        # solution = ['2H2 + O2', '2H2O']
-
-        return f'''{solution[0]} -> {solution[1]} 
-        ({self.reaction})'''
+        res = super().__repr__()
+        return f'{self.coeff}{res}'
