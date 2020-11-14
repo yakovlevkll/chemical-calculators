@@ -6,7 +6,7 @@ class Atom:
     symbol: str
     name: str
     mass: float
-    electron_structure: List
+    electron_structure: list
     '''
 
     def __init__(self, Z: int, symbol: str, mass: float):

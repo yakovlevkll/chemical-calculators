@@ -5,7 +5,7 @@
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
   "python.testing.pytestEnabled": true,
-  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.typeCheckingMode": "basic",
   "python.languageServer": "Pylance",
   "python.testing.pytestPath": "env/bin/pytest"
 }

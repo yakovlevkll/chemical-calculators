@@ -9,7 +9,7 @@ from typing import Union
 from .atom import Atom
 
 
-class Table(dict):
+class Table:
 
     def __init__(self):
         with open('data/table.json', 'r') as f:

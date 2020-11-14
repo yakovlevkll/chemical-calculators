@@ -2,8 +2,6 @@
 Some helpers for main scripts.
 '''
 
-from typing import List
-
 def subscript_it(string: str) -> str:
     '''
     Turns `5` into `₅`
@@ -11,7 +9,7 @@ def subscript_it(string: str) -> str:
 
     subs = '₀₁₂₃₄₅₆₇₈₉'
 
-    res: List[str] = []
+    res: list[str] = []
 
     for char in string:
         if char.isdigit():

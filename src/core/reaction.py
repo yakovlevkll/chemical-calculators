@@ -1,8 +1,7 @@
 from string import ascii_letters
 from itertools import product
-from typing import Set, List
+
 import numpy as np
-import numpy.typing as npt
 
 from .substance import Substance
 from helpers.string import clean_ws
@@ -18,10 +17,10 @@ class Reaction:
         self.reaction: str = clean_ws(reaction)
         self.validate()
 
-        self.atoms: Set[str] = set([])
-        self.reactants: List[Substance] = []
-        self.products: List[Substance] = []
-        self.solution: List[int] = []
+        self.atoms: set[str] = set([])
+        self.reactants: list[Substance] = []
+        self.products: list[Substance] = []
+        self.solution: list[int] = []
 
         self.parse()
         self.solve()
@@ -73,7 +72,7 @@ class Reaction:
 
             matrix.append(coeffs)
 
-        coeffs: npt.ArrayLike = np.array(matrix)
+        coeffs = np.array(matrix)
 
         combs = product(range(1, 12), repeat=len(self.atoms) + 1)
 
