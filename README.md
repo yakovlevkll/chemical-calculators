@@ -6,10 +6,7 @@
 - [x] Calculates molar (atomic) mass of a substance
 - [x] Beautifies chemical formula for text output
 - [x] Handle compounds with brackets
-
-## Todo
-
-- [ ] Balance chemical reactions
+- [x] Balance chemical reactions (alpha)
 
 ## Contribution
 
