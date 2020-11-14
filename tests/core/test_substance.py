@@ -55,12 +55,6 @@ def test_spread_atom():
     assert sub.composition == {'C': 2, 'H': 6, 'O': 1}
 
 
-def test_multiplication():
-    sub = Substance('OH') * 2
-
-    assert sub.composition == {'H': 2, 'O': 2}
-
-
 def test_single_brackets_1():
     sub = Substance('Ba(OH)2')
 

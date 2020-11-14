@@ -8,16 +8,15 @@ Features:
 - Beautifies chemical formula for text output
 '''
 
-import re
 from string import ascii_letters
-from typing import Union
+from typing import Optional
 
+from .composition import Composition
 from .table import TABLE
 from helpers.string import subscript_it, clean_ws
 
 
 class Substance:
-
     '''
     Main class for substance.
 
@@ -33,26 +32,12 @@ class Substance:
 
         self.pretty_formula: str = ''
         self.expanded_formula: str = ''
-        self.composition: dict[str, int] = {}
+        self.composition: Optional[Composition] = None
         self.mass: float = 0
 
         self.prettify_formula()
         self.find_composition()
         self.find_mass()
-
-    def __mul__(self, factor: int):
-        # TODO: Is it expected behaviour?
-        if type(factor) is int:
-            sub = Substance(self.formula)
-            sub.composition = {key: val * factor for key,
-                            val in self.composition.items()}
-            return sub
-        else:
-            raise ValueError(f'The factor type must be `int`')
-
-    def __add__(self):
-        # TODO: Should it be a Reaction?
-        pass
 
     def validate(self):
         allowed_chars = ascii_letters + "1234567890()[]"
@@ -68,14 +53,14 @@ class Substance:
 
         self.pretty_formula = subscript_it(self.formula)
 
-    def expand_formula(self):
+    def find_composition(self):
         '''
         Determines atomic composition of a substance
         '''
 
-        stack = ['']
+        stack: list[str] = ['']
 
-        bracket_index = None
+        bracket_index: Optional[str] = None
 
         for char in self.formula:
             if not bracket_index == None:
@@ -84,7 +69,9 @@ class Substance:
                     continue
                 else:
                     last = stack.pop()
-                    stack[-1] += Substance.multiply_indexes(last, bracket_index)
+
+                    stack[-1] += str(Composition(
+                        last) * int(bracket_index))
 
                     bracket_index = None
 
@@ -95,60 +82,12 @@ class Substance:
             elif char in [')', ']']:
                 bracket_index = ''
 
+        # Checking end of a formula
         if bracket_index:
             last = stack.pop()
-            stack[-1] += Substance.multiply_indexes(last, bracket_index)
+            stack[-1] += str(Composition(last) * int(bracket_index))
 
-        self.expanded_formula = stack[0]
-
-    @staticmethod
-    def multiply_indexes(formula: str, factor: Union[str, int]) -> str:
-        if not type(factor) is int:
-            factor = int(factor)
-
-        if factor == 0:
-            factor = 1
-
-        pairs = Substance.get_atom_index_pairs(formula)
-        pairs_mult = [(key, val * factor) for key, val in pairs]
-        return ''.join([f'{key}{val}' for key, val in pairs_mult])
-
-
-    @staticmethod
-    def get_atom_index_pairs(formula: str):
-        '''
-        Split formula in atom-index pairs
-        '''
-
-        pattern = r'([A-Z]{1}[a-z]{0,1})(\d*)'
-        res = re.findall(pattern, formula)
-
-        pairs = []
-
-        for atom, index in res:
-            if index == '':
-                index = 1
-            
-            pairs.append((atom, int(index)))
-
-        return pairs
-
-
-    def find_composition(self):
-        '''
-        Determines atomic composition of a substance
-        '''
-
-        self.expand_formula()
-        self.composition = {}
-
-        pairs = Substance.get_atom_index_pairs(self.expanded_formula)
-
-        for atom, index in pairs:
-            if not atom in self.composition:
-                self.composition.setdefault(atom, 0)
-
-            self.composition[atom] += index
+        self.composition = Composition(stack[0])
 
     def find_mass(self):
         '''
