@@ -15,6 +15,8 @@ from .composition import Composition
 from .table import TABLE
 from helpers.string import subscript_it, clean_ws
 
+import re
+
 
 class Substance:
     '''
@@ -36,11 +38,37 @@ class Substance:
         self.find_mass()
 
     def validate(self):
+        formula = self.formula
         allowed_chars = ascii_letters + "1234567890()[]"
 
-        for char in self.formula:
+        for char in formula:
             if not char in allowed_chars:
                 raise ValueError(f'Unknown char is given: `{char}`')
+
+        pattern = r'([A-Z]{1}[a-z]{0,1})(\d*)'
+        Atom_index_pairs = re.findall(pattern, formula)
+
+        for atom, index in Atom_index_pairs:
+            if atom not in TABLE:
+                raise ValueError(f'Not a real element: `{atom}`')
+
+        pairs = [atom + index for atom, index in Atom_index_pairs]
+
+        for pair in pairs:
+            if pair in formula:
+                formula = formula.replace(pair, '')
+            else:
+                pass
+
+        for char in formula:
+            if char in ascii:
+                raise ValueError(f'Unexpected lowercase letter')
+        for char in formula:
+            if char in "1234567890":
+                formula = formula.replace(char, '')
+
+        open_bracket = []
+        closed_bracket = []
 
     def find_composition(self):
         '''
