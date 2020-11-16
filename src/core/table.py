@@ -20,13 +20,13 @@ class Table:
                          for index, item in enumerate(data)]
 
     def __getitem__(self, key: Union[str, int]):
-        if isinstance(key, int):
+        if type(key) is int:
             if 0 < key < 119:
                 return self.elements[key - 1]
             else:
                 raise ValueError(
-                    'Only elements from 1 (H) to 118 (Og) are opened so far')
-        elif isinstance(key, str):
+                    'Only elements from 1 (H) to 118 (Og) are discovered so far')
+        elif type(key) is str:
             try:
                 return next(el for el in self.elements if el.symbol == key)
             except StopIteration:

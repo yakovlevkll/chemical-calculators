@@ -39,6 +39,9 @@ class Substance:
 
     def validate(self):
         formula = self.formula
+        if len(formula) == 0:
+            # UI - bring to another level
+            raise ValueError("don't be shy, type something")
         allowed_chars = ascii_letters + "1234567890()[]"
 
         for char in formula:
@@ -48,27 +51,44 @@ class Substance:
         pattern = r'([A-Z]{1}[a-z]{0,1})(\d*)'
         Atom_index_pairs = re.findall(pattern, formula)
 
+        if not Atom_index_pairs:
+            raise ValueError('Bad substance given')
+
         for atom, index in Atom_index_pairs:
-            if atom not in TABLE:
-                raise ValueError(f'Not a real element: `{atom}`')
+            test = TABLE[atom]
 
         pairs = [atom + index for atom, index in Atom_index_pairs]
 
         for pair in pairs:
             if pair in formula:
-                formula = formula.replace(pair, '')
-            else:
-                pass
+                formula = formula.replace(pair, '', 1)
 
-        for char in formula:
-            if char in ascii:
-                raise ValueError(f'Unexpected lowercase letter')
-        for char in formula:
-            if char in "1234567890":
-                formula = formula.replace(char, '')
+        # Checking
+        check_lowercase = re.match(r'[a-z]+', formula)
 
-        open_bracket = []
-        closed_bracket = []
+        if check_lowercase:
+            raise ValueError(f'Unexpected lowercase letter')
+
+        # Replacing all digits
+        formula = re.sub(r'\d+', '', formula)
+        brackets = {
+            ']': '[',
+            ')': '('
+        }
+
+        if len(formula) > 0:
+            stack: list[str] = []
+            for char in formula:
+                if char in brackets.values():
+                    stack.append(char)
+                elif char in brackets.keys():
+                    if stack[-1] == brackets[char]:
+                        stack.pop()
+                else:
+                    raise ValueError(f'Unknown char found: `{char}`')
+
+            if len(stack) > 0:
+                raise ValueError('Bracket pairs do not match')
 
     def find_composition(self):
         '''

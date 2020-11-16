@@ -78,3 +78,33 @@ def test_nested_brackets():
 
     assert sub.composition == {
         'Ti': 1, 'Cl': 2, 'C': 12, 'H': 32, 'P': 4}
+
+
+def test_brackets_fail_1():
+    with pytest.raises(ValueError):
+        sub = Substance('Ti[(CH3)2')
+
+
+def test_brackets_fail_1():
+    with pytest.raises(ValueError):
+        sub = Substance('Ti[(CH3])2')
+
+
+def test_unknown_element():
+    with pytest.raises(ValueError):
+        sub = Substance('A3')
+
+
+def test_lowercase():
+    with pytest.raises(ValueError):
+        sub = Substance('H2Clo')
+
+
+def test_empty_string():
+    with pytest.raises(ValueError):
+        sub = Substance('')
+
+
+def test_garbage():
+    with pytest.raises(ValueError):
+        sub = Substance('()12')
