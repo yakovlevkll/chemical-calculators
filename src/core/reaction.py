@@ -1,6 +1,7 @@
 from string import ascii_letters
 from itertools import product
 
+import re
 import numpy as np
 from numpy.lib.npyio import recfromtxt
 
@@ -30,17 +31,16 @@ class Reaction:
 
     def validate(self):
         # TODO: Improve validation
-        allowed_chars = ascii_letters + '0123456789()->=+'
+        allowed_chars = ascii_letters + '0123456789()[]->=+'
 
         for char in self.equation:
             if not char in allowed_chars:
                 raise ValueError(f'Unknown char found: `{char}`')
 
     def parse(self):
-        if '=' in self.equation:
-            eq = self.equation.split('=')
-        elif '->' in self.equation:
-            eq = self.equation.split('->')
+        reaction_symbol = re.search(r'(->|=)', self.equation)
+        if reaction_symbol:
+            eq = self.equation.split(reaction_symbol.group(0))
         else:
             raise ValueError('No reaction symbol found')
 
