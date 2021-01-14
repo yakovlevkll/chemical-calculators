@@ -31,11 +31,17 @@ class Reaction:
 
     def validate(self):
         # TODO: Improve validation
-        allowed_chars = ascii_letters + '0123456789()[]->=+'
 
-        for char in self.equation:
-            if not char in allowed_chars:
-                raise ValueError(f'Unknown char found: `{char}`')
+        reactant_pattern = '([A-z\d]+\+)*[A-z\d]+'
+        product_pattern = reactant_pattern
+
+        pattern = '^{0}(=|->){1}$'.format(reactant_pattern, product_pattern)
+        print(pattern)
+        print(self.equation)
+        check = re.match(pattern, self.equation)
+
+        if not check:
+            raise ValueError('Invalid reaction syntax')
 
     def parse(self):
         reaction_symbol = re.search(r'(->|=)', self.equation)
