@@ -28,11 +28,12 @@ class Reaction:
 
         self.parse()
         self.solve()
-
+        print(self)
     def validate(self):
         # TODO: Improve validation
 
-        reactant_pattern = '([A-z\d]+\+)*[A-z\d]+'
+        subs_symbols = '[A-z\d\(\)\[\]]'
+        reactant_pattern = f'({subs_symbols}+\+)*{subs_symbols}+'
         product_pattern = reactant_pattern
 
         pattern = '^{0}(=|->){1}$'.format(reactant_pattern, product_pattern)
@@ -73,7 +74,46 @@ class Reaction:
 
     def solve(self):
         coeffs = self.get_coeffs_matrix()
-        combs = product(range(1, 12), repeat=len(self.atoms) + 1)
+        # The system of linear equations to be solved is represented in the form of matrix AX = B
+
+        # Select all columns except the last one
+        A = coeffs[:, :-1]
+
+        # Select the last column
+        B = -coeffs[:, -1]
+        
+        # Solution could be found as X = A^-1 * B
+        # X = np.linalg.inv(A).dot(B)
+
+        # Alternative way
+        try:
+            X = np.linalg.solve(A, B)
+            self.find_coeffs(X)
+        except:
+            self.solve_backup()
+        for i, item in enumerate(self.substances):
+            item.coeff = self.solution[i]
+
+        
+    
+
+        # Check that all coeffs are integers
+    def find_coeffs(self, X):
+        for i in range(1,50):
+            probe = i * X
+            probe_int = np.around(probe)
+
+            if np.allclose(probe, probe_int):
+                solution = list(probe_int.astype(int))
+                solution.append(i)
+                self.solution = solution
+                break
+
+            #if the matrix isn't square
+    def solve_backup(self):
+        coeffs = self.get_coeffs_matrix()
+            #generates possible combinations
+        combs = product(range(1, 12), repeat=coeffs.shape[1])
 
         for i in combs:
             solution = np.array(i)
@@ -83,8 +123,7 @@ class Reaction:
                 self.solution = list(solution)
                 break
 
-        for i, item in enumerate(self.substances):
-            item.coeff = self.solution[i]
+       
 
     def __str__(self):
         reactants = ' + '.join([str(item) for item in self.reactants])
