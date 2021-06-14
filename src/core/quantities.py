@@ -40,21 +40,17 @@ class Quantities:
         else:
             raise ValueError
     
+    def get_SI_coeff(self):
+        return self.coeff * self.unit.
         
     def check_unit(self, unit_str: str) -> Unit:
         unit_classes = [MassUnit, VolumeUnit, Moles]
         res = None
         for unit_cls in unit_classes:
             try:
-                res = unit_cls(unit_str)
-                break
-            except:
-                pass
-
-        if res:
-            return res
-        else:
-            raise ValueError(f'Unknown units given - {unit_str}')
+                return unit_cls(unit_str)
+            finally:
+                raise ValueError(f'Unknown units given - {unit_str}')
 
     def excess(self):
         '''
