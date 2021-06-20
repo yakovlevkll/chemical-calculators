@@ -1,0 +1,2 @@
+class SpecificError(BaseException):
+    pass
