@@ -29,13 +29,13 @@ def test_substances_with_brackets_2():
     assert react.solution == [2, 3, 1, 6]
 
 
-# @pytest.mark.skip('Takes algorithm long time to solve')
+@pytest.mark.skip('Takes algorithm long time to solve')
 def test_substances_with_brackets_3():
     react = Reaction('Al + HNO3 = Al(NO3)3 + NH4NO3 + H2O')
 
     assert react.solution == [8, 30, 8, 3, 9]
 
-# @pytest.mark.skip()
+@pytest.mark.skip()
 def test_suspicious_reaction_1():
     react = Reaction('H2S + KMnO4 + H2SO4 = S + MnSO4 + K2SO4 + H2O')
 
