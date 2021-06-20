@@ -1,5 +1,6 @@
 import re
 from typing import NamedTuple, Tuple
+from .consts import Empirical
 
 
 class FactorExpPair(NamedTuple):
@@ -121,9 +122,7 @@ class MassUnit(Unit):
         FactorExpPair(['oz','ounce','ounces'], 28.3495, 1)
     ]
     
-# Empirical is for unit-austronauts, metric is for real humans
-# Conversions below (MOVE TO A DIFFERENT FILE MAYBE?)
-INCH = 0.0254
+
 
 class VolumeUnit(Unit):
     '''
@@ -136,7 +135,7 @@ class VolumeUnit(Unit):
         FactorExpPair(['m^3', 'm3'], 1, 3),
         # Other units
         FactorExpPair(['l','litre','litres'], 0.001, 1),
-        FactorExpPair(['inch^3', 'inch3'], INCH ** 3, 3),
+        FactorExpPair(['inch^3', 'inch3', 'in^3'], Empirical.INCH ** 3, 3),
     ]
 
 

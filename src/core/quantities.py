@@ -2,7 +2,9 @@
 from .units import MassUnit, VolumeUnit, Moles, Unit
 import re
 from typing import Optional, Tuple
-
+from .table import TABLE
+from .substance import Substance
+from .consts import Consts
 # cases
 # 1. given quantities -> find excess or how much is needed
 # EXAMPLE ---> H2+O2->H2O :  X quantity of H + Y quantity of O
@@ -14,19 +16,35 @@ class Quantities:
     coeff: float
     unit: Unit
 
-    def __init__(self, unit_quantity: str, molar_mass: float):
-        self.user_input = unit_quantity
-        # finds excess
-        coeff, unit_str = self.split_coeff()
-        
-        self.coeff = coeff
-        
-        self.unit = self.check_unit(unit_str)
-        # converts everything to moles
-        # self.to_moles()
-        self.quantity_value = coeff * 10**self.unit.final_exponent * self.unit.conv_value
-        
+    def __init__(self, user_input: str, molar_mass: float):
+        # user input of unit and quantity
+        self.user_input = user_input
 
+        # splits coefficient from the unit
+        coeff, unit_str = self.split_coeff()
+
+        # coefficient originally inputted by the user
+        self.coeff = coeff
+
+        # Checks if it's a mass, volume or mole 
+        self.unit = self.check_unit(unit_str)
+
+        # molar mass of substance
+        self.molar_mass = molar_mass
+
+        # the amount of grams or cubic meters after transforming the prefixes and coefficients
+        self.quantity_value = coeff * 10**self.unit.final_exponent * self.unit.conv_value
+
+        # atmospheric pressure
+        self.pressure = 1
+
+        # temperature
+        self.temperature = 300
+
+        # molar_volume
+        self.molar_volume = (Consts.R * self.temperature)/self.pressure
+
+    
     def split_coeff(self) -> Tuple[float, str]:
         '''
         separates coefficient from the index-unit
@@ -65,32 +83,52 @@ class Quantities:
 
         raise ValueError(f'Unknown units given - {unit_str}')
 
-    def get_moles(self) -> float:
+    def to_moles(self) -> float:
         '''
-        Get quantity in moles
+        converts mass (g) and volume (m^3) to moles (mol)
         '''
         if isinstance(self.unit, MassUnit):
-            pass
+            mole_value = self.quantity_value/self.molar_mass 
+
         elif isinstance(self.unit, VolumeUnit):
-            pass
+            mole_value = self.quantity_value/self.molar_volume
 
-        return 0.0
+        else:
+            # It's moles
+            mole_value = self.quantity_value
 
-    def get_mass(self, unit: str) -> float:
+        return mole_value
+
+    def to_mass(self) -> float:
         '''
-        get quantity in specified mass units
+        converts volume (m^3) and moles (mol) to mass (g) 
         '''
+        # TODO: Convert to optional units? To kg or whatever
 
-        return 0.0
+        if isinstance(self.unit, VolumeUnit):
+            mass_value = self.to_moles()*self.molar_mass
+        elif isinstance(self.unit, Moles):
+            mass_value = self.to_moles()*self.molar_mass        
+        else:
+            # it's mass
+            mass_value = self.quantity_value
 
-    def get_volume(self, unit: str) -> float:
+        return mass_value
+
+    def to_volume(self) -> float:
         '''
-        converts volume (xl, xm^3) to amount of substance (moles)
+        converts mass (g) and moles (mol) to volume (m^3)
         '''
-        return 0.0
+        if isinstance(self.unit, MassUnit):
+            volume_value = self.to_moles()*self.molar_volume
+        elif isinstance(self.unit, Moles): 
+            volume_value = self.quantity_value*self.molar_volume
+        else:
+            # it's volume
+            volume_value = self.quantity_value
+        return volume_value
+
+   
 
 
-
-
-    
 
