@@ -1,6 +1,6 @@
 import re
 from typing import NamedTuple, Tuple
-from .consts import Empirical
+from .consts import Impirial
 
 
 class FactorExpPair(NamedTuple):
@@ -53,7 +53,9 @@ class Unit:
         if prefix:
             self.final_exponent = self.prefixes[prefix] * data.exp                             # -2 * 3 = -6
         else:
-            self.final_exponent = data.exp
+            self.final_exponent = 0
+
+        self.conv_value = data.conv_value
 
     def get_data(self) -> FactorExpPair:
         '''
@@ -132,10 +134,10 @@ class VolumeUnit(Unit):
     '''
     DATA = [
         # Base unit
-        FactorExpPair(['m^3', 'm3'], 1, 3),
+        FactorExpPair(['m\^3', 'm3'], 1, 3),
         # Other units
         FactorExpPair(['l','litre','litres'], 0.001, 1),
-        FactorExpPair(['inch^3', 'inch3', 'in^3'], Empirical.INCH ** 3, 3),
+        FactorExpPair(['inch\^3', 'inch3', 'in\^3', 'in3'], Impirial.INCH ** 3, 3),
     ]
 
 
@@ -145,3 +147,4 @@ class Moles(Unit):
         FactorExpPair(['mol', 'moles'], 1, 1),
         
     ]
+

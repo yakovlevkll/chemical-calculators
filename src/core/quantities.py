@@ -5,6 +5,8 @@ from typing import Optional, Tuple
 from .table import TABLE
 from .substance import Substance
 from .consts import Consts
+from .enums import UnitType
+
 # cases
 # 1. given quantities -> find excess or how much is needed
 # EXAMPLE ---> H2+O2->H2O :  X quantity of H + Y quantity of O
@@ -12,11 +14,12 @@ from .consts import Consts
 
 # aos == Amount of Substance
 
+
 class Quantities:
     coeff: float
     unit: Unit
 
-    def __init__(self, user_input: str, molar_mass: float):
+    def __init__(self, user_input: str, molar_mass: float, unit_type: UnitType):
         # user input of unit and quantity
         self.user_input = user_input
 
@@ -26,8 +29,11 @@ class Quantities:
         # coefficient originally inputted by the user
         self.coeff = coeff
 
+        # type of value (Mass, Volume, Mole)
+        self.unit_type = unit_type
+
         # Checks if it's a mass, volume or mole 
-        self.unit = self.check_unit(unit_str)
+        self.unit = self.unit_type.value(unit_str)
 
         # molar mass of substance
         self.molar_mass = molar_mass
@@ -42,7 +48,8 @@ class Quantities:
         self.temperature = 300
 
         # molar_volume
-        self.molar_volume = (Consts.R * self.temperature)/self.pressure
+        self.molar_volume = (Consts.IDEALGAS * self.temperature)/self.pressure
+
 
     
     def split_coeff(self) -> Tuple[float, str]:
@@ -67,21 +74,6 @@ class Quantities:
         print(self.coeff*self.unit.conv_value)
         return self.coeff * self.unit.conv_value
         
-    def check_unit(self, unit_str: str) -> Unit: #Some kind of error here
-        '''
-        Checks to determine the appropriate class (i.e. Mass, Volume or Moles)
-
-        Runs units.py through each class until a non-error solution is obtained
-        '''
-        unit_classes = [MassUnit, VolumeUnit, Moles]
-
-        for unit_cls in unit_classes:
-            try:
-                return unit_cls(unit_str)
-            except:
-                continue
-
-        raise ValueError(f'Unknown units given - {unit_str}')
 
     def to_moles(self) -> float:
         '''
