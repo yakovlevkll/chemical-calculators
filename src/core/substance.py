@@ -28,7 +28,7 @@ class Substance:
     mass - molar (atomic) mass
     '''
 
-    def __init__(self, formula: str, quantity: str, unit_type: ):  #COMMENTS - ADD THEM!!!!
+    def __init__(self, formula: str, quantity: str,):  #COMMENTS - ADD THEM!!!!
         self.formula: str = clean_ws(formula)
         self.validate()
 

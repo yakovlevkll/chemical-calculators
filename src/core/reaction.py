@@ -8,6 +8,8 @@ from numpy.lib.npyio import recfromtxt
 from .substance import Substance
 from helpers.string import clean_ws
 
+from .quantities import Quantities
+
 
 class Reaction:
     '''
@@ -16,7 +18,8 @@ class Reaction:
     TODO: add description
     '''
 
-    def __init__(self, equation: str):
+    def __init__(self, equation: str, quantities: list[str] = None):  
+        # TODO: Add comments
         self.equation: str = clean_ws(equation)
         self.validate()
 
@@ -26,9 +29,12 @@ class Reaction:
         self.substances: list[ReactionItem] = []
         self.solution: list[int] = []
 
+        if quantities:
+            self.quantities = quantities
+
         self.parse()
         self.solve()
-        print(self)
+
     def validate(self):
         # TODO: Improve validation
 
@@ -94,8 +100,6 @@ class Reaction:
         for i, item in enumerate(self.substances):
             item.coeff = self.solution[i]
 
-        
-    
 
         # Check that all coeffs are integers
     def find_coeffs(self, X):
@@ -132,9 +136,12 @@ class Reaction:
 
 
 class ReactionItem(Substance):
-    def __init__(self, data, coeff: int = 1, *args, **kwargs):
+    def __init__(self, data, coeff: int = 1, quantity: str = None, *args, **kwargs):
         super().__init__(data, *args, **kwargs)
         self.coeff = coeff
+        if quantity:
+            self.quantity = Quantities(quantity, self.mass)
+        
 
     def __str__(self):
         formula = super().__str__()
@@ -144,3 +151,5 @@ class ReactionItem(Substance):
     def __repr__(self):
         res = super().__repr__()
         return f'{self.coeff}{res}'
+
+

@@ -19,7 +19,7 @@ class Quantities:
     coeff: float
     unit: Unit
 
-    def __init__(self, user_input: str, molar_mass: float, unit_type: UnitType):
+    def __init__(self, user_input: str, molar_mass: float, unit_type: Optional[UnitType] = None):
         # user input of unit and quantity
         self.user_input = user_input
 
@@ -29,11 +29,13 @@ class Quantities:
         # coefficient originally inputted by the user
         self.coeff = coeff
 
-        # type of value (Mass, Volume, Mole)
-        self.unit_type = unit_type
-
-        # Checks if it's a mass, volume or mole 
-        self.unit = self.unit_type.value(unit_str)
+        # Checks if it's a mass, volume or mole
+        if unit_type:
+            # type of value (Mass, Volume, Mole)
+            self.unit_type = unit_type
+            self.unit = self.unit_type.value(unit_str)
+        else:
+            self.unit = self.check_unit(unit_str)
 
         # molar mass of substance
         self.molar_mass = molar_mass
@@ -73,6 +75,22 @@ class Quantities:
     def get_SI_coeff(self):
         print(self.coeff*self.unit.conv_value)
         return self.coeff * self.unit.conv_value
+
+    def check_unit(self, unit_str: str) -> Unit: 
+        '''
+        Checks to determine the appropriate class (i.e. Mass, Volume or Moles)
+
+        Runs units.py through each class until a non-error solution is obtained
+        '''
+        unit_classes = [MassUnit, VolumeUnit, Moles]
+
+        for unit_cls in unit_classes:
+            try:
+                return unit_cls(unit_str)
+            except:
+                continue
+
+        raise ValueError(f'Unknown units given - {unit_str}')
         
 
     def to_moles(self) -> float:
