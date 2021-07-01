@@ -6,6 +6,8 @@ class Composition(dict):
     Helper class for substance.
 
     Generally it is a dict[str, int]
+
+    TODO: Provide some examples
     '''
 
     def __init__(self, data, *args, **kwargs) -> None:

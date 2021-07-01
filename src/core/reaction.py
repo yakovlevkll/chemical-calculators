@@ -1,5 +1,6 @@
 from string import ascii_letters
 from itertools import product
+from typing import Optional
 
 import re
 import numpy as np
@@ -10,6 +11,26 @@ from helpers.string import clean_ws
 
 from .quantities import Quantities
 
+class ReactionItem(Substance):
+    quantity: Quantities
+    coeff: int
+
+    def __init__(self, data, coeff: int = 1, quantity: str = None, *args, **kwargs):
+        super().__init__(data, *args, **kwargs)
+        self.coeff = coeff
+        if quantity:
+            self.quantity = Quantities(quantity, self.mass)
+            
+        
+
+    def __str__(self):
+        formula = super().__str__()
+        coeff = '' if self.coeff == 1 else self.coeff
+        return f'{coeff}{formula} ({self.quantity})'
+
+    def __repr__(self):
+        res = super().__repr__()
+        return f'{self.coeff}{res}'
 
 class Reaction:
     '''
@@ -18,19 +39,27 @@ class Reaction:
     TODO: add description
     '''
 
+    equation: str
+    atoms: set[str]
+    reactants: list[ReactionItem]
+    products: list[ReactionItem]
+    substances: list[ReactionItem]
+    solution: list[int]
+    quantities: Optional[list[str]]
+
     def __init__(self, equation: str, quantities: list[str] = None):  
         # TODO: Add comments
-        self.equation: str = clean_ws(equation)
+        self.equation = clean_ws(equation)
         self.validate()
 
-        self.atoms: set[str] = set([])
-        self.reactants: list[ReactionItem] = []
-        self.products: list[ReactionItem] = []
-        self.substances: list[ReactionItem] = []
-        self.solution: list[int] = []
+        self.atoms = set([])
+        self.reactants = []
+        self.products = []
+        self.substances = []
+        self.solution = []
 
-        if quantities:
-            self.quantities = quantities
+        # if quantities:
+        #     self.quantities = quantities
 
         self.parse()
         self.solve()
@@ -58,11 +87,17 @@ class Reaction:
             raise ValueError('No reaction symbol found')
 
         reactants, products = [item.split('+') for item in eq]
+        substances = reactants + products
 
-        self.reactants = [ReactionItem(item) for item in reactants]
-        self.products = [ReactionItem(item) for item in products]
-        self.substances = self.reactants + self.products
+        # if self.quantities:
+        #     self.substances = [ReactionItem(val, quantity=self.quantities[ind]) for ind, val in enumerate(substances)]
+        # else:
+        self.substances = [ReactionItem(val) for val in substances]
 
+        self.reactants = self.substances[:len(reactants)]
+        self.products = self.substances[len(reactants):]
+
+        # Update atoms list
         for subs in self.reactants:
             self.atoms.update(set(subs.composition.keys()))
 
@@ -134,22 +169,13 @@ class Reaction:
         products = ' + '.join([str(item) for item in self.products])
         return f'{reactants} -> {products}'
 
-
-class ReactionItem(Substance):
-    def __init__(self, data, coeff: int = 1, quantity: str = None, *args, **kwargs):
-        super().__init__(data, *args, **kwargs)
-        self.coeff = coeff
-        if quantity:
-            self.quantity = Quantities(quantity, self.mass)
+    
+    def excess_reactant(self):
+        for item in self.reactants:
+            item.quantity.to_moles()
         
 
-    def __str__(self):
-        formula = super().__str__()
-        coeff = '' if self.coeff == 1 else self.coeff
-        return f'{coeff}{formula}'
 
-    def __repr__(self):
-        res = super().__repr__()
-        return f'{self.coeff}{res}'
+
 
 

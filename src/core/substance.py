@@ -14,7 +14,7 @@ from typing import Optional
 from .composition import Composition
 from .table import TABLE
 from helpers.string import subscript_it, clean_ws
-from .quantities import Quantities
+
 
 import re
 
@@ -27,19 +27,17 @@ class Substance:
     composition - self-descriptive, something like {'H': 2, 'O': 1}
     mass - molar (atomic) mass
     '''
+    formula: str
+    mass: float
+    composition: Composition
 
-    def __init__(self, formula: str, quantity: str,):  #COMMENTS - ADD THEM!!!!
+
+    def __init__(self, formula: str):  #COMMENTS - ADD THEM!!!!
         self.formula: str = clean_ws(formula)
         self.validate()
 
-        self.composition: Optional[Composition] = None
-        self.mass: float = 0
-        self.quantity_type = unit_type
-
-
         self.find_composition()
         self.find_mass()
-        self.quantity = Quantities(quantity, self.mass, unit_type)
 
     def validate(self):
         formula = self.formula
