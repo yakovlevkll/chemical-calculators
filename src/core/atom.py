@@ -9,6 +9,10 @@ class Atom:
     electron_structure: list
     '''
 
+    Z: int
+    symbol: str
+    mass: float
+
     def __init__(self, Z: int, symbol: str, mass: float):
         self.Z: int = Z
         self.symbol: str = symbol
