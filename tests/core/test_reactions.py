@@ -46,3 +46,10 @@ def test_suspicious_reaction_2():
     react = Reaction('KNO2 + K2Cr2O7 + H2SO4 = KNO3 + Cr2(SO4)3 + K2SO4 + H2O')
 
     assert react.solution == []
+
+@pytest.mark.skip()
+def test_excess():
+    react = Reaction('H2 + O2 = H2O', ['2kg', '5kg', ''])
+    val = react.excess_reactant()
+
+    assert 1 == 1
