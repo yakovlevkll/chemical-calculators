@@ -47,9 +47,19 @@ def test_suspicious_reaction_2():
 
     assert react.solution == []
 
-@pytest.mark.skip()
 def test_excess():
-    react = Reaction('H2 + O2 = H2O', ['2kg', '5kg', ''])
-    val = react.excess_reactant()
+    '''
+    Reaction        3Pb + 2H3PO4 = 3H2 + Pb3(PO4)2
+    User_moles      9       10
+    normalized       *3       *5
+    min_val         min
+    optimal          9       6       9     3
+    excess          0       4
+    '''
 
-    assert 1 == 1
+    r = Reaction('Pb + H3PO4 = H2 + Pb3(PO4)2', ['9mol', '10mol', '', ''])
+
+    assert r.reaction_items[0].optimal_moles == 9
+    assert r.reaction_items[1].optimal_moles == 6
+    assert r.reaction_items[2].optimal_moles == 9
+    assert r.reaction_items[3].optimal_moles == 3

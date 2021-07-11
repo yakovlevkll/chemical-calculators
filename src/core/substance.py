@@ -33,13 +33,26 @@ class Substance:
 
 
     def __init__(self, formula: str):  #COMMENTS - ADD THEM!!!!
+
+        # A clean version of the substance
         self.formula: str = clean_ws(formula)
+
+        # Checks if the formula is valid
         self.validate()
 
+        # Finds the composition of the substance
         self.find_composition()
+
+        # Finds the molar mass of the substance
         self.find_mass()
 
     def validate(self):
+        '''
+        Checks the validity of the substance
+            - Acceptable characters
+            - Acceptable substances ( looks for atom-index pairs and checks the periodic table)
+            - Brackets
+        '''
         formula = self.formula
         if len(formula) == 0:
             # UI - bring to another level
@@ -51,12 +64,13 @@ class Substance:
                 raise ValueError(f'Unknown char is given: `{char}`')
 
         pattern = r'([A-Z]{1}[a-z]{0,1})(\d*)'
-        Atom_index_pairs = re.findall(pattern, formula)
+        Atom_index_pairs = re.findall(pattern, formula) #--> [[Atom, Index], [Atom, Index], [Atom, Index]]
 
         if not Atom_index_pairs:
             raise ValueError('Bad substance given')
 
-        for atom, index in Atom_index_pairs:
+        # Checks if the atom is real
+        for atom, _ in Atom_index_pairs:
             test = TABLE[atom]
 
         pairs = [atom + index for atom, index in Atom_index_pairs]
@@ -95,6 +109,9 @@ class Substance:
     def find_composition(self):
         '''
         Determines atomic composition of a substance
+            - Determines separate atoms
+            - Determines the quanitity of each atom
+        EX: H2O --> H:2, O:1
         '''
 
         stack: list[str] = ['']
@@ -131,6 +148,7 @@ class Substance:
     def find_mass(self):
         '''
         Finds molar (atomic) mass of a substance
+            - Uses quantities of each atom and their molar mass from the TABLE 
         '''
 
         self.mass = 0

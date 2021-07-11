@@ -2,7 +2,7 @@
 Main entry point
 '''
 
-from core.reaction import Reaction
+from core.quantities import Quantities
 
 from ui.tkinter.main import start_gui
 
@@ -14,3 +14,4 @@ if __name__ == '__main__':
     #     ui.gui.run()
     # else:
     #     ui.console.run(ui.args)
+    
