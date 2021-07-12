@@ -7,6 +7,14 @@
       "request": "launch",
       "program": "src/app.py",
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug Tests",
+      "type": "python",
+      "request": "test",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}/src"
     }
   ]
 }
