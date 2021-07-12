@@ -38,14 +38,17 @@ class ReactionItem(Substance):
     @property
     def excess(self) -> float:
         if self.user_moles:
-            return self.user_moles - self.normalized_moles
+            return self.user_moles - self.optimal_moles
         else:
             return 0
 
     def __str__(self):
         formula = super().__str__()
         coeff = '' if self.coeff == 1 else self.coeff
-        return f'{coeff}{formula} ({self.quantity})'
+        if self.quantity:
+            return f'{coeff}{formula} ({self.quantity.to_moles()}mol)'
+        else:
+            return f'{coeff}{formula}'
 
     def __repr__(self):
         res = super().__repr__()
@@ -66,7 +69,7 @@ class Reaction:
     reaction_items: list[ReactionItem]
 
     # List like ['5kg', '2mol', '']
-    quantities: list[str]
+    quantities: Optional[list[str]]
 
     solution: list[int]
 
@@ -81,8 +84,7 @@ class Reaction:
         self.reaction_items = []
         self.solution = []
 
-        if quantities:
-            self.quantities = quantities
+        self.quantities = quantities if quantities else None
 
         # Splits the reaction into smaller components (REACTANTS, PRODUCTS, SUBSTANCES)
         self.parse()
@@ -90,7 +92,8 @@ class Reaction:
         self.solve()
 
         # Find optimal
-        self.find_optimal_moles()
+        if self.quantities:
+            self.normalize_reaction()
 
     def validate(self):
         # TODO: Improve validation
@@ -129,7 +132,7 @@ class Reaction:
             if not len(substances) == len(self.quantities):
                 raise ReactionQuantatiesUnmatch
             sub_quant_pairs = zip(substances, self.quantities)
-            self.substances = [ReactionItem(sub, quantity=quant) for sub, quant in sub_quant_pairs]
+            self.reaction_items = [ReactionItem(sub, quantity=quant) for sub, quant in sub_quant_pairs]
         else:
             self.reaction_items = [ReactionItem(val) for val in substances]
 
@@ -265,11 +268,12 @@ class Reaction:
         normalized = [el.normalized_moles for el in side if el.normalized_moles > 0]
         
         # Find min value
-        min_val = min(normalized)
+        if len(normalized) > 0:
+            min_val = min(normalized)
 
-        # Find optimal values for the equation
-        for el in self.reaction_items:
-            el.optimal_moles = min_val*el.coeff
+            # Find optimal values for the equation
+            for el in self.reaction_items:
+                el.optimal_moles = min_val*el.coeff
         
         
 

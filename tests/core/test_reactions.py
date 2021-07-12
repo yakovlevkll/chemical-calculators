@@ -47,7 +47,7 @@ def test_suspicious_reaction_2():
 
     assert react.solution == []
 
-def test_excess():
+def test_excess_1():
     '''
     Reaction        3Pb + 2H3PO4 = 3H2 + Pb3(PO4)2
     User_moles      9       10
@@ -59,7 +59,28 @@ def test_excess():
 
     r = Reaction('Pb + H3PO4 = H2 + Pb3(PO4)2', ['9mol', '10mol', '', ''])
 
+    # Test optimal
     assert r.reaction_items[0].optimal_moles == 9
     assert r.reaction_items[1].optimal_moles == 6
     assert r.reaction_items[2].optimal_moles == 9
     assert r.reaction_items[3].optimal_moles == 3
+
+    # Test excess
+    assert r.reaction_items[0].excess == 0
+    assert r.reaction_items[1].excess == 4
+
+
+def test_no_excess():
+    '''
+    '''
+
+    r = Reaction('H2 + O2 = H2O', ['2mol', '1mol', ''])
+
+    assert r.reaction_items[0].excess == 0
+    assert r.reaction_items[1].excess == 0
+
+def test_two_products():
+
+    r = Reaction('Fe(OH)3 + H2SO4 = Fe2(SO4)3 + H2O', ['4kg','','','5kg'])
+
+    print(r)
