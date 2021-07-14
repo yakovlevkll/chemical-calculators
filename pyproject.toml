@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chemical-calculators"
-version = "0.1.0"
+version = "0.0.1"
 description = "Various calculators for chemistry"
 authors = ["Yakovlev Kll <yakovlev.kll@gmail.com>"]
 
