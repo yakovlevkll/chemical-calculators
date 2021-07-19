@@ -1,19 +1,21 @@
-from string import ascii_letters
-from itertools import product
-from typing import Optional, NamedTuple
-
 import re
 import numpy as np
+from itertools import product
 
+# Typings, exception, etc.
+from typing import Optional
+from .typings import ReactionQuantatiesUnmatch
+
+# Helpers
+from ..helpers.string import clean_ws
+
+# Submodules
 from .substance import Substance
-from helpers.string import clean_ws
+from .quantity import Quantity
 
-from .quantities import Quantities
-
-from .Exceptions import ReactionQuantatiesUnmatch
 
 class ReactionItem(Substance):
-    quantity: Optional[Quantities]
+    quantity: Optional[Quantity]
     coeff: int
     user_moles: Optional[float]
     optimal_moles: float
@@ -22,13 +24,13 @@ class ReactionItem(Substance):
         super().__init__(data, *args, **kwargs)
         self.coeff = coeff
 
-        self.quantity = Quantities(quantity, self.mass) if quantity else None
+        self.quantity = Quantity(quantity, self.mass) if quantity else None
         self.user_moles = self.quantity.to_moles() if self.quantity else None
-        
-    @property    
+
+    @property
     def normalized_moles(self) -> float:
         '''
-        
+
         '''
         if self.coeff and self.user_moles:
             return self.user_moles / self.coeff
@@ -54,6 +56,7 @@ class ReactionItem(Substance):
         res = super().__repr__()
         return f'{self.coeff}{res}'
 
+
 class Reaction:
     '''
     Reaction class.
@@ -63,7 +66,7 @@ class Reaction:
 
     equation: str
     atoms: set[str]
-    
+
     reactants: list[ReactionItem]
     products: list[ReactionItem]
     reaction_items: list[ReactionItem]
@@ -73,7 +76,7 @@ class Reaction:
 
     solution: list[int]
 
-    def __init__(self, equation: str, quantities: list[str] = None):  
+    def __init__(self, equation: str, quantities: list[str] = None):
         # TODO: Add comments
         self.equation = clean_ws(equation)
         self.validate()
@@ -107,8 +110,7 @@ class Reaction:
         product_pattern = reactant_pattern
 
         pattern = '^{0}(=|->){1}$'.format(reactant_pattern, product_pattern)
-        print(pattern)
-        print(self.equation)
+
         check = re.match(pattern, self.equation)
 
         if not check:
@@ -132,7 +134,8 @@ class Reaction:
             if not len(substances) == len(self.quantities):
                 raise ReactionQuantatiesUnmatch
             sub_quant_pairs = zip(substances, self.quantities)
-            self.reaction_items = [ReactionItem(sub, quantity=quant) for sub, quant in sub_quant_pairs]
+            self.reaction_items = [ReactionItem(
+                sub, quantity=quant) for sub, quant in sub_quant_pairs]
         else:
             self.reaction_items = [ReactionItem(val) for val in substances]
 
@@ -167,7 +170,7 @@ class Reaction:
 
         # Select the last column
         B = -coeffs[:, -1]
-        
+
         # Solution could be found as X = A^-1 * B
         # X = np.linalg.inv(A).dot(B)
 
@@ -180,10 +183,10 @@ class Reaction:
         for i, item in enumerate(self.reaction_items):
             item.coeff = self.solution[i]
 
-
         # Check that all coeffs are integers
+
     def find_coeffs(self, X):
-        for i in range(1,50):
+        for i in range(1, 50):
             probe = i * X
             probe_int = np.around(probe)
 
@@ -193,7 +196,7 @@ class Reaction:
                 self.solution = solution
                 break
 
-            #if the matrix isn't square
+            # if the matrix isn't square
     def solve_backup(self):
         '''
         A backup balancing method
@@ -201,7 +204,7 @@ class Reaction:
             - Takes longer but is 100% efficient
         '''
         coeffs = self.get_coeffs_matrix()
-            #generates possible combinations
+        # generates possible combinations
         combs = product(range(1, 12), repeat=coeffs.shape[1])
 
         for i in combs:
@@ -212,14 +215,11 @@ class Reaction:
                 self.solution = list(solution)
                 break
 
-       
-
     def __str__(self):
         reactants = ' + '.join([str(item) for item in self.reactants])
         products = ' + '.join([str(item) for item in self.products])
         return f'{reactants} -> {products}'
 
-    
     def normalize_reaction(self) -> None:
         '''
             Walk through reactants and find excess reactants
@@ -233,7 +233,7 @@ class Reaction:
             5. Two(+) products?       -->
 
             ALGORITHM
-            
+
             1. Walk through reaction items, calculate normalized moles from user data
             2. Define minimal amount, hold it (reactant or product)
             3. Walk through reactions item, calculate ideal normalized moles based on minimal amount
@@ -247,10 +247,10 @@ class Reaction:
             raise ValueError('Not enough data to find excess reactant')
         else:
             self.find_optimal_moles()
-        
+
     def find_optimal_moles(self):
         '''
-        
+
         Example of full cycle:
         React       3Pl + 2H3PO4 = 3H2 + Pl3(PO4)2
         User_moles    9       10
@@ -265,8 +265,9 @@ class Reaction:
         if any([bool(el.quantity) for el in self.products]):
             side = self.products
 
-        normalized = [el.normalized_moles for el in side if el.normalized_moles > 0]
-        
+        normalized = [
+            el.normalized_moles for el in side if el.normalized_moles > 0]
+
         # Find min value
         if len(normalized) > 0:
             min_val = min(normalized)
@@ -274,11 +275,3 @@ class Reaction:
             # Find optimal values for the equation
             for el in self.reaction_items:
                 el.optimal_moles = min_val*el.coeff
-        
-        
-
-
-        
-
-        
-      

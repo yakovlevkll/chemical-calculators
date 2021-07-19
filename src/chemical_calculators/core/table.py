@@ -1,19 +1,21 @@
-'''
-Periodic table.
-
-'''
-
 import json
+import pkgutil
+
+# Typings
 from typing import Union
 
 from .atom import Atom
 
 
 class Table:
+    '''
+    Periodic table.
+
+    '''
 
     def __init__(self):
-        with open('data/table.json', 'r') as f:
-            data = json.load(f)
+        file = pkgutil.get_data(__name__, '../data/table.json')
+        data = json.loads(file)
 
         # No zero element
         self.elements = [Atom(index + 1, **item)
@@ -32,7 +34,8 @@ class Table:
             except StopIteration:
                 raise ValueError(f'Unknown element - `{key}`')
         else:
-            raise ValueError(f'Integer between 1 and 118 or atom name was expected')
+            raise ValueError(
+                f'Integer between 1 and 118 or atom name was expected')
 
     def __repr__(self):
         return 'PERIODIC TABLE'

@@ -1,4 +1,4 @@
-from core.composition import Composition
+from chemical_calculators.core.composition import Composition
 
 
 def test_add():

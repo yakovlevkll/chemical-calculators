@@ -1,11 +1,13 @@
 
-from .units import MassUnit, VolumeUnit, Moles, Unit
 import re
+
+# Typings
 from typing import Optional, Tuple
-from .table import TABLE
-from .substance import Substance
+from .typings import UnitType
+
+
+from .unit import MassUnit, VolumeUnit, MolesUnit, Unit
 from .consts import Consts
-from .enums import UnitType
 
 # cases
 # 1. given quantities -> find excess or how much is needed
@@ -15,7 +17,7 @@ from .enums import UnitType
 # aos == Amount of Substance
 
 
-class Quantities:
+class Quantity:
     coeff: float
     unit: Unit
 
@@ -52,8 +54,6 @@ class Quantities:
         # molar_volume
         self.molar_volume = (Consts.IDEALGAS * self.temperature)/self.pressure
 
-
-    
     def split_coeff(self) -> Tuple[float, str]:
         '''
         separates coefficient from the index-unit
@@ -61,7 +61,7 @@ class Quantities:
         Example 2: 4cl --> 4, cl
         '''
         # combines base units into a string
-        
+
         regexp = r'^(\d+\.{0,1}\d*)([A-z\^\d]+)$'
 
         # Find with regexp
@@ -71,18 +71,17 @@ class Quantities:
             return coeff, match.group(2)
         else:
             raise ValueError
-    
+
     def get_SI_coeff(self):
-        print(self.coeff*self.unit.conv_value)
         return self.coeff * self.unit.conv_value
 
-    def check_unit(self, unit_str: str) -> Unit: 
+    def check_unit(self, unit_str: str) -> Unit:
         '''
         Checks to determine the appropriate class (i.e. Mass, Volume or Moles)
 
         Runs units.py through each class until a non-error solution is obtained
         '''
-        unit_classes = [MassUnit, VolumeUnit, Moles]
+        unit_classes = [MassUnit, VolumeUnit, MolesUnit]
 
         for unit_cls in unit_classes:
             try:
@@ -91,14 +90,13 @@ class Quantities:
                 continue
 
         raise ValueError(f'Unknown units given - {unit_str}')
-        
 
     def to_moles(self) -> float:
         '''
         converts mass (g) and volume (m^3) to moles (mol)
         '''
         if isinstance(self.unit, MassUnit):
-            mole_value = self.quantity_value/self.molar_mass 
+            mole_value = self.quantity_value/self.molar_mass
 
         elif isinstance(self.unit, VolumeUnit):
             mole_value = self.quantity_value/self.molar_volume
@@ -117,8 +115,8 @@ class Quantities:
 
         if isinstance(self.unit, VolumeUnit):
             mass_value = self.to_moles()*self.molar_mass
-        elif isinstance(self.unit, Moles):
-            mass_value = self.to_moles()*self.molar_mass        
+        elif isinstance(self.unit, MolesUnit):
+            mass_value = self.to_moles()*self.molar_mass
         else:
             # it's mass
             mass_value = self.quantity_value
@@ -131,14 +129,9 @@ class Quantities:
         '''
         if isinstance(self.unit, MassUnit):
             volume_value = self.to_moles()*self.molar_volume
-        elif isinstance(self.unit, Moles): 
+        elif isinstance(self.unit, MolesUnit):
             volume_value = self.quantity_value*self.molar_volume
         else:
             # it's volume
             volume_value = self.quantity_value
         return volume_value
-
-   
-
-
-

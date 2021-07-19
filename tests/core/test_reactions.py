@@ -1,6 +1,6 @@
 import pytest
 
-from core.reaction import Reaction
+from chemical_calculators.core.reaction import Reaction
 
 
 def test_arrow():
@@ -35,17 +35,20 @@ def test_substances_with_brackets_3():
 
     assert react.solution == [8, 30, 8, 3, 9]
 
+
 @pytest.mark.skip()
 def test_suspicious_reaction_1():
     react = Reaction('H2S + KMnO4 + H2SO4 = S + MnSO4 + K2SO4 + H2O')
 
     assert react.solution == [2, 2, 2, 1, 2, 1, 4]
 
+
 @pytest.mark.skip()
 def test_suspicious_reaction_2():
     react = Reaction('KNO2 + K2Cr2O7 + H2SO4 = KNO3 + Cr2(SO4)3 + K2SO4 + H2O')
 
     assert react.solution == []
+
 
 def test_excess_1():
     '''
@@ -79,8 +82,6 @@ def test_no_excess():
     assert r.reaction_items[0].excess == 0
     assert r.reaction_items[1].excess == 0
 
+
 def test_two_products():
-
-    r = Reaction('Fe(OH)3 + H2SO4 = Fe2(SO4)3 + H2O', ['4kg','','','5kg'])
-
-    print(r)
+    r = Reaction('Fe(OH)3 + H2SO4 = Fe2(SO4)3 + H2O', ['4kg', '', '', '5kg'])

@@ -4,9 +4,7 @@ class Atom:
 
     Z: int
     symbol: str
-    name: str
     mass: float
-    electron_structure: list
     '''
 
     Z: int

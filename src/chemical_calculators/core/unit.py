@@ -1,5 +1,9 @@
 import re
+
+# Typings
 from typing import NamedTuple, Tuple
+
+
 from .consts import Impirial
 
 
@@ -14,7 +18,6 @@ class FactorExpPair(NamedTuple):
     # Hom nany units in base units, e.g. hom many meters in inch
     conv_value: float
     exp: float
-   
 
 
 class Unit:
@@ -24,7 +27,7 @@ class Unit:
     conv_value: float
     # the final exponent with base 10. Is a multiplication of prefix exponent and unit exponent
     final_exponent: float
-    
+
     prefixes = {
         'm': -3,
         'c': -2,
@@ -41,17 +44,19 @@ class Unit:
         '''
         if not (self.DATA):
             raise NotImplementedError('Child unit class must provide ...')
-        
-        prefix, unit = self.split_into_components(unit)                                         # c, m^3
 
-        self.user_input = unit                                                                   # m^3
+        prefix, unit = self.split_into_components(
+            unit)                                         # c, m^3
 
-        data = self.get_data()                                                                  #(m^3, 1, 3)
+        # m^3
+        self.user_input = unit
 
-      
+        data = self.get_data()  # (m^3, 1, 3)
+
         # Applies the appropriate exponent in accordance with the prefix
         if prefix:
-            self.final_exponent = self.prefixes[prefix] * data.exp                             # -2 * 3 = -6
+            # -2 * 3 = -6
+            self.final_exponent = self.prefixes[prefix] * data.exp
         else:
             self.final_exponent = 0
 
@@ -60,12 +65,12 @@ class Unit:
     def get_data(self) -> FactorExpPair:
         '''
         Checks what unit it is (g, in, l, foot, etc.) in one of the child classes (depending on the iteration in check_unit func inside .quantities)
-    
+
         Returns FactorExpPair
         '''
-        for el in self.DATA:                      
-            if self.user_input in el.names: 
-                return el                                                                       #(m^3, 1, 3)
+        for el in self.DATA:
+            if self.user_input in el.names:
+                return el  # (m^3, 1, 3)
         raise ValueError()
 
     def split_into_components(self, unit) -> Tuple[str, str]:
@@ -77,7 +82,7 @@ class Unit:
 
         # combines base units into a string
         prefix = '|'.join(self.prefixes.keys())
-        units = '|'.join(self.naming_list)# --> 'g'
+        units = '|'.join(self.naming_list)  # --> 'g'
         regexp = f'^({prefix})*({units})$'
         # regexp = f'^(\d+\.{0,1}\d*)(m|k|M)*(g|pound|l)$'
         # Find with regexp
@@ -86,7 +91,6 @@ class Unit:
             return match.group(1), match.group(2)
         else:
             raise ValueError
-
 
     def convert(self, to: str):
         # TODO: Implement
@@ -107,9 +111,6 @@ class Unit:
             res += el.names
         return res
 
-        
-        
-
 
 class MassUnit(Unit):
     '''
@@ -119,11 +120,10 @@ class MassUnit(Unit):
     '''
     DATA = [
         # Base unit
-        FactorExpPair(['g','gram', 'grams'], 1, 1),
+        FactorExpPair(['g', 'gram', 'grams'], 1, 1),
         # Other units
-        FactorExpPair(['oz','ounce','ounces'], 28.3495, 1)
+        FactorExpPair(['oz', 'ounce', 'ounces'], 28.3495, 1)
     ]
-    
 
 
 class VolumeUnit(Unit):
@@ -136,15 +136,15 @@ class VolumeUnit(Unit):
         # Base unit
         FactorExpPair(['m\^3', 'm3'], 1, 3),
         # Other units
-        FactorExpPair(['l','litre','litres'], 0.001, 1),
-        FactorExpPair(['inch\^3', 'inch3', 'in\^3', 'in3'], Impirial.INCH ** 3, 3),
+        FactorExpPair(['l', 'litre', 'litres'], 0.001, 1),
+        FactorExpPair(['inch\^3', 'inch3', 'in\^3', 'in3'],
+                      Impirial.INCH ** 3, 3),
     ]
 
 
-class Moles(Unit):
+class MolesUnit(Unit):
     DATA = [
         # Base unit
         FactorExpPair(['mol', 'moles'], 1, 1),
-        
-    ]
 
+    ]

@@ -1,6 +1,6 @@
 import pytest
 
-from core.table import TABLE
+from chemical_calculators.core.table import TABLE
 
 
 def test_out_of_range():

@@ -1,27 +1,26 @@
-'''
-Chemical substance class.
-
-Features:
-
-- Determines substance composition
-- Calculates molar (atomic) mass of a substance
-- Beautifies chemical formula for text output
-'''
-
+import re
 from string import ascii_letters
+
+# Typings
 from typing import Optional
+
+# Helpers
+from ..helpers.string import subscript_it, clean_ws
+
 
 from .composition import Composition
 from .table import TABLE
-from helpers.string import subscript_it, clean_ws
-
-
-import re
 
 
 class Substance:
     '''
     Main class for substance.
+
+    Features:
+
+    - Determines substance composition
+    - Calculates molar (atomic) mass of a substance
+    - Beautifies chemical formula for text output
 
     formula - something like `H2O`
     composition - self-descriptive, something like {'H': 2, 'O': 1}
@@ -31,8 +30,7 @@ class Substance:
     mass: float
     composition: Composition
 
-
-    def __init__(self, formula: str):  #COMMENTS - ADD THEM!!!!
+    def __init__(self, formula: str):  # COMMENTS - ADD THEM!!!!
 
         # A clean version of the substance
         self.formula: str = clean_ws(formula)
@@ -64,7 +62,8 @@ class Substance:
                 raise ValueError(f'Unknown char is given: `{char}`')
 
         pattern = r'([A-Z]{1}[a-z]{0,1})(\d*)'
-        Atom_index_pairs = re.findall(pattern, formula) #--> [[Atom, Index], [Atom, Index], [Atom, Index]]
+        # --> [[Atom, Index], [Atom, Index], [Atom, Index]]
+        Atom_index_pairs = re.findall(pattern, formula)
 
         if not Atom_index_pairs:
             raise ValueError('Bad substance given')
